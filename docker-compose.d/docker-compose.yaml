@@ -1,0 +1,8 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: proto-registry
+    ports:
+      - "5432:5432"

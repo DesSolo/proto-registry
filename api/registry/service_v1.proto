@@ -1,0 +1,211 @@
+syntax = "proto3";
+
+package services.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+
+option go_package = "proto-registry/pkg/api/registry;service_v1";
+
+
+service ProtoRegistry {
+	// Список проектов
+	rpc GetProjects(GetProjectsRequest) returns (GetProjectsResponse) {
+		option (google.api.http) = {
+			get: "/v1/projects"
+		};
+	};
+
+	// Зарегистрировать проект
+	rpc RegisterProject(RegisterProjectRequest) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			post: "/v1/projects"
+			body: "*"
+		};
+	};
+
+	// Список версий
+	rpc GetVersions(GetVersionsRequest) returns (GetVersionsResponse) {
+		option (google.api.http) = {
+			get: "/v1/versions"
+		};
+	};
+
+	// Список файлов
+	rpc GetFiles(GetFilesRequest) returns (GetFilesResponse) {
+		option (google.api.http) = {
+			get: "/v1/files"
+		};
+	};
+
+	// Детальное представление файла
+	rpc GetFile(GetFileRequest) returns (GetFileResponse) {
+		option (google.api.http) = {
+			get: "/v1/files:content"
+		};
+	};
+
+	// Зарегистрировать файлы
+	rpc RegisterFiles(RegisterFilesRequest) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			post: "/v1/files"
+			body: "*"
+		};
+	}
+}
+
+// Пагинация
+message Pagination {
+	// лимит
+	int64 limit = 1;
+	// отступ
+	int64 offset = 2;
+}
+
+// Запрос на получения списка проктов
+message GetProjectsRequest {
+	// пагинация
+	Pagination pagination = 1;
+	// фильтр по имени
+	optional string name = 2;
+}
+
+// Проект
+message Project {
+	// gitlab id
+	int64 id = 1;
+	// имя
+	string name = 2;
+	// обновлено
+	google.protobuf.Timestamp updated_at = 3;
+};
+
+// Ответ на запрос получения списка проектов
+message GetProjectsResponse {
+	// проекты
+	repeated Project projects = 1;
+}
+
+// Запрос на регистрацию проекта
+message RegisterProjectRequest {
+	Project project = 1 [(validate.rules).message.required = true];
+}
+
+// Запрос на получения списка версий
+message GetVersionsRequest {
+	// пагинация
+	Pagination pagination = 1;
+	// id проекта
+	int64 project_id = 2;
+}
+
+// Тип reference
+enum RefType {
+	// неопределено
+	REF_TYPE_UNKNOWN = 0;
+	// ветка
+	REF_TYPE_BRANCH = 1;
+	// тег
+	REF_TYPE_TAG = 2;
+}
+
+// Ответ на запрос получения списка версий
+message GetVersionsResponse {
+
+	// Версия
+	message Version {
+		// id версии
+		int64 id = 1;
+		// git reference
+		string ref = 2;
+		// тип reference
+		RefType ref_type = 3;
+		// коммит
+		string commit = 4;
+		// создано
+		google.protobuf.Timestamp created_at = 5;
+		// обновлено
+		google.protobuf.Timestamp updated_at = 6;
+	}
+
+	// версии
+	repeated Version versions = 1;
+}
+
+// Запрос на получения списка файлов
+message GetFilesRequest {
+	// пагинация
+	Pagination pagination = 1;
+	// id версии
+	int64 version_id = 2;
+}
+
+// Тип файла
+enum FileType {
+	// неопределено
+	FILE_TYPE_UNKNOWN = 0;
+	// proto контракт
+	FILE_TYPE_PROTO = 1;
+	// openapi схема
+	FILE_TYPE_OPENAPI = 2;
+}
+
+// Ответ на запрос получения списка файлов
+message GetFilesResponse {
+
+	// Файл
+	message File {
+		// id файла
+		int64 id = 1;
+		// тип файла
+		FileType file_type = 2;
+		// путь
+		string path = 3;
+		// создан
+		google.protobuf.Timestamp created_at = 4;
+	}
+
+	// файлы
+	repeated File files = 1;
+}
+
+// Запрос на получение файла
+message GetFileRequest{
+	// id проекта
+	int64 project_id = 1 [(validate.rules).int64.gt = 0];;
+	// git reference
+	string ref = 2;
+	// путь
+	string path = 3;
+}
+
+// Ответ на запрос получения файла
+message GetFileResponse {
+	// содержимое файла
+	string content = 1;
+}
+
+// Запрос на регистрацию файлов
+message RegisterFilesRequest {
+
+	// файл
+	message File {
+		// тип файла
+		FileType file_type = 1 [(validate.rules).enum.defined_only = true];
+		// путь
+		string path = 2 [(validate.rules).string.min_len = 3];
+	}
+
+	// id проекта
+	int64 project_id = 1 [(validate.rules).int64.gt = 0];
+	// тип reference
+	RefType ref_type = 2 [(validate.rules).enum.defined_only = true];
+	// git reference
+	string ref = 3 [(validate.rules).string.min_len = 3];
+	// коммит
+	string commit = 4 [(validate.rules).string.min_len = 3];
+	// файлы
+	repeated File files = 5 [(validate.rules).repeated.min_items = 1];
+}

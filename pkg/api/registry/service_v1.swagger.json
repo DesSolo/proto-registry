@@ -1,0 +1,528 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/registry/service_v1.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ProtoRegistry"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/files": {
+      "get": {
+        "summary": "Список файлов",
+        "operationId": "ProtoRegistry_GetFiles",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetFilesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pagination.limit",
+            "description": "лимит",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.offset",
+            "description": "отступ",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "versionId",
+            "description": "id версии",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ProtoRegistry"
+        ]
+      },
+      "post": {
+        "summary": "Зарегистрировать файлы",
+        "operationId": "ProtoRegistry_RegisterFiles",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RegisterFilesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtoRegistry"
+        ]
+      }
+    },
+    "/v1/files:content": {
+      "get": {
+        "summary": "Детальное представление файла",
+        "operationId": "ProtoRegistry_GetFile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetFileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "description": "id проекта",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "ref",
+            "description": "git reference",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "path",
+            "description": "путь",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProtoRegistry"
+        ]
+      }
+    },
+    "/v1/projects": {
+      "get": {
+        "summary": "Список проектов",
+        "operationId": "ProtoRegistry_GetProjects",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProjectsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pagination.limit",
+            "description": "лимит",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.offset",
+            "description": "отступ",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "name",
+            "description": "фильтр по имени",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProtoRegistry"
+        ]
+      },
+      "post": {
+        "summary": "Зарегистрировать проект",
+        "operationId": "ProtoRegistry_RegisterProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RegisterProjectRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtoRegistry"
+        ]
+      }
+    },
+    "/v1/versions": {
+      "get": {
+        "summary": "Список версий",
+        "operationId": "ProtoRegistry_GetVersions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetVersionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pagination.limit",
+            "description": "лимит",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "pagination.offset",
+            "description": "отступ",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "projectId",
+            "description": "id проекта",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ProtoRegistry"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "GetVersionsResponseVersion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "id версии"
+        },
+        "ref": {
+          "type": "string",
+          "title": "git reference"
+        },
+        "refType": {
+          "$ref": "#/definitions/v1RefType",
+          "title": "тип reference"
+        },
+        "commit": {
+          "type": "string",
+          "title": "коммит"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "создано"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "обновлено"
+        }
+      },
+      "title": "Версия"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1FileType": {
+      "type": "string",
+      "enum": [
+        "FILE_TYPE_UNKNOWN",
+        "FILE_TYPE_PROTO",
+        "FILE_TYPE_OPENAPI"
+      ],
+      "default": "FILE_TYPE_UNKNOWN",
+      "description": "- FILE_TYPE_UNKNOWN: неопределено\n - FILE_TYPE_PROTO: proto контракт\n - FILE_TYPE_OPENAPI: openapi схема",
+      "title": "Тип файла"
+    },
+    "v1GetFileResponse": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "содержимое файла"
+        }
+      },
+      "title": "Ответ на запрос получения файла"
+    },
+    "v1GetFilesResponse": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1GetFilesResponseFile"
+          },
+          "title": "файлы"
+        }
+      },
+      "title": "Ответ на запрос получения списка файлов"
+    },
+    "v1GetFilesResponseFile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "id файла"
+        },
+        "fileType": {
+          "$ref": "#/definitions/v1FileType",
+          "title": "тип файла"
+        },
+        "path": {
+          "type": "string",
+          "title": "путь"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "создан"
+        }
+      },
+      "title": "Файл"
+    },
+    "v1GetProjectsResponse": {
+      "type": "object",
+      "properties": {
+        "projects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Project"
+          },
+          "title": "проекты"
+        }
+      },
+      "title": "Ответ на запрос получения списка проектов"
+    },
+    "v1GetVersionsResponse": {
+      "type": "object",
+      "properties": {
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GetVersionsResponseVersion"
+          },
+          "title": "версии"
+        }
+      },
+      "title": "Ответ на запрос получения списка версий"
+    },
+    "v1Pagination": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "string",
+          "format": "int64",
+          "title": "лимит"
+        },
+        "offset": {
+          "type": "string",
+          "format": "int64",
+          "title": "отступ"
+        }
+      },
+      "title": "Пагинация"
+    },
+    "v1Project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "gitlab id"
+        },
+        "name": {
+          "type": "string",
+          "title": "имя"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "обновлено"
+        }
+      },
+      "title": "Проект"
+    },
+    "v1RefType": {
+      "type": "string",
+      "enum": [
+        "REF_TYPE_UNKNOWN",
+        "REF_TYPE_BRANCH",
+        "REF_TYPE_TAG"
+      ],
+      "default": "REF_TYPE_UNKNOWN",
+      "description": "- REF_TYPE_UNKNOWN: неопределено\n - REF_TYPE_BRANCH: ветка\n - REF_TYPE_TAG: тег",
+      "title": "Тип reference"
+    },
+    "v1RegisterFilesRequest": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "format": "int64",
+          "title": "id проекта"
+        },
+        "refType": {
+          "$ref": "#/definitions/v1RefType",
+          "title": "тип reference"
+        },
+        "ref": {
+          "type": "string",
+          "title": "git reference"
+        },
+        "commit": {
+          "type": "string",
+          "title": "коммит"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1RegisterFilesRequestFile"
+          },
+          "title": "файлы"
+        }
+      },
+      "title": "Запрос на регистрацию файлов"
+    },
+    "v1RegisterFilesRequestFile": {
+      "type": "object",
+      "properties": {
+        "fileType": {
+          "$ref": "#/definitions/v1FileType",
+          "title": "тип файла"
+        },
+        "path": {
+          "type": "string",
+          "title": "путь"
+        }
+      },
+      "title": "файл"
+    },
+    "v1RegisterProjectRequest": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/definitions/v1Project"
+        }
+      },
+      "title": "Запрос на регистрацию проекта"
+    }
+  }
+}

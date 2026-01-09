@@ -1,0 +1,55 @@
+lint:
+  use:
+    - DEFAULT
+  enum_zero_value_suffix: _NONE
+  service_suffix: API
+  ignore: []
+  except: []
+  allow_comment_ignores: false
+  ignore_only: {}
+
+deps:
+  - github.com/googleapis/googleapis@master
+  - github.com/bufbuild/protoc-gen-validate
+
+generate:
+  inputs:
+    - directory: "api"
+  plugins:
+    - name: go
+      out: ./pkg
+      opts:
+        paths: source_relative
+
+    - name: go-grpc
+      out: ./pkg
+      opts:
+        paths: source_relative
+
+    - name: grpc-gateway
+      out: ./pkg
+      opts:
+        paths: source_relative
+        generate_unbound_methods: true
+
+    - name: openapiv2
+      out: ./pkg
+
+    - name: openapiv2
+      out: ./docs
+      opts:
+        allow_merge: true
+        generate_unbound_methods: true
+
+    - name: validate
+      out: ./pkg
+      opts:
+        lang: go
+        paths: source_relative
+
+    - name: stub
+      out: .
+
+breaking:
+  ignore: []
+  against_git_ref: master
