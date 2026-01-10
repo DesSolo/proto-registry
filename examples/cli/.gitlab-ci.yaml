@@ -1,0 +1,32 @@
+stages:
+  - register-contracts
+
+variables:
+  REGISTRY_ADDR: "127.0.0.1:50051"
+  REGISTRY_CONTRACTS_PATH: "api"
+
+register-contracts:
+  stage: register-contracts
+  image: your-registry-cli-image:latest
+  script:
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        REF_TYPE="TAG"
+        REF="$CI_COMMIT_TAG"
+      elif [ -n "$CI_COMMIT_BRANCH" ]; then
+        REF_TYPE="BRANCH"
+        REF="$CI_COMMIT_BRANCH"
+      else
+        echo "Unsupported ref type" >&2
+        exit 1
+      fi
+    - registry-cli contracts register \
+        --registry-addr "$REGISTRY_ADDR" \
+        --root docs \
+        --project-id "$CI_PROJECT_ID" \
+        --project-name "$CI_PROJECT_NAME" \
+        --ref "$REF" \
+        --ref-type "$REF_TYPE" \
+        --commit "$CI_COMMIT_SHA"
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
