@@ -1,7 +1,7 @@
 // src/components/layout/Sidebar.jsx
 import React, { useState } from 'react';
 import { Select, Spin, Tag, Tree } from 'antd';
-import { FolderOutlined, DownOutlined, RightOutlined } from '@ant-design/icons';
+import { FolderOutlined, DownOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
 import Selector from '../common/Selector';
 import useVersions from '../../hooks/useVersions';
 import useFiles from '../../hooks/useFiles';
@@ -145,40 +145,21 @@ const Sidebar = ({ onFileSelect }) => {
                             treeData={treeData}
                             className={styles.treeContainer}
                             defaultExpandAll
-                            switcherIcon={({ expanded }) => (
-                                <span
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        width: '16px',
-                                        height: '16px',
-                                        borderRadius: '2px',
-                                        backgroundColor: 'transparent',
-                                        color: 'currentColor',
-                                        fontSize: '12px',
-                                        lineHeight: '1',
-                                        border: 'none',
-                                        fontFamily: 'inherit'
-                                    }}
-                                >
-                                    {expanded ? <DownOutlined style={{ fontSize: '10px', fontFamily: 'inherit' }} /> : <RightOutlined style={{ fontSize: '10px', fontFamily: 'inherit' }} />}
-                                </span>
-                            )}
+                            switcherIcon={ <DownOutlined /> }
                             showIcon
                             icon={(props) => {
                                 if (props.isLeaf) {
                                     // Определяем тип файла по расширению и показываем соответствующую иконку
                                     const fileName = props.title;
                                     if (fileName.endsWith('.proto')) {
-                                        return <span role="img" aria-label="protobuf" style={{ color: 'var(--ant-primary-color)', fontSize: '16px', fontFamily: 'inherit' }}>🔷</span>;
+                                        return <span role="img" aria-label="protobuf" style={{ fontSize: '16px' }}>🔷</span>;
                                     } else if (fileName.endsWith('.json')) {
-                                        return <span role="img" aria-label="json" style={{ color: 'var(--ant-error-color)', fontSize: '16px', fontFamily: 'inherit' }}>🔶</span>;
+                                        return <span role="img" aria-label="json" style={{ fontSize: '16px' }}>🔶</span>;
                                     } else {
-                                        return <span role="img" aria-label="file" style={{ color: 'var(--ant-text-description)', fontSize: '16px', fontFamily: 'inherit' }}>📄</span>;
+                                        return <span role="img" aria-label="file" style={{  fontSize: '16px' }}>📄</span>;
                                     }
                                 }
-                                return <FolderOutlined style={{ color: 'var(--ant-warning-color)', fontSize: '16px', fontFamily: 'inherit' }} />;
+                                return <FolderOutlined style={{ fontSize: '16px' }} />;
                             }}
                             onSelect={(selectedKeys, info) => {
                                 const file = info.node.file;

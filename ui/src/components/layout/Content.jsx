@@ -1,7 +1,7 @@
 // src/components/layout/Content.jsx
 import React from 'react';
 import { Spin, Card } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { SyncOutlined } from '@ant-design/icons';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
@@ -88,10 +88,9 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
     const cardTitle = (
         <div className={styles.cardTitle}>
             <span className={styles.filePath}>{filePath}</span>
-            <ReloadOutlined
-                className={styles.refreshIcon}
+            <SyncOutlined
                 onClick={onRefresh}
-                title="Обновить файл"
+                title="Обновить"
             />
         </div>
     );
@@ -100,7 +99,7 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
         <Card
             title={cardTitle}
             className={styles.contractCard}
-            bodyStyle={{ padding: 0 }}
+            styles={{ body: { padding: 0 }}}
         >
             <pre className={styles.container}>
                 <code className={`language-${fileType}`}>
