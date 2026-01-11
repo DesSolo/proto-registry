@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle -->
+  <circle cx="16" cy="16" r="14" fill="#1e90ff" stroke="#1890ff" stroke-width="1"/>
+  
+  <!-- Inner proto symbol -->
+  <rect x="8" y="8" width="16" height="16" rx="2" fill="white" stroke="white" stroke-width="1"/>
+  
+  <!-- Proto file icon -->
+  <path d="M12 12 L20 12 L20 16 L16 16 L16 20 L12 20 Z" fill="#1e90ff"/>
+  
+  <!-- Lines representing data -->
+  <line x1="13" y1="13" x2="15" y2="13" stroke="#1e90ff" stroke-width="1"/>
+  <line x1="13" y1="15" x2="17" y2="15" stroke-width="1" stroke="#1e90ff"/>
+  <line x1="13" y1="17" x2="15" y2="17" stroke-width="1" stroke="#1e90ff"/>
+  
+  <!-- Registry symbol -->
+  <path d="M18 10 L22 10 L22 18 L18 18 Z" fill="#52c41a" opacity="0.7"/>
+  <path d="M19 11 L21 11 L21 17 L19 17 Z" fill="#52c41a" opacity="0.9"/>
+</svg>

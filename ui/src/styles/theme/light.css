@@ -1,0 +1,9 @@
+/* src/styles/theme/light.css */
+.light-theme {
+  --bg-primary: var(--light-bg-primary);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-tertiary: var(--light-bg-tertiary);
+  --border-color: var(--light-border-color);
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+}

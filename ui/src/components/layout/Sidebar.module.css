@@ -1,0 +1,32 @@
+/* src/components/layout/Sidebar.module.css */
+.sidebarContainer {
+  padding: 16px;
+  font-family: inherit;
+}
+
+.treeContainer {
+  margin-top: 16px;
+  background: transparent;
+}
+
+.treeNode {
+  padding: 2px 0;
+  font-family: inherit;
+}
+
+.treeNodeSelected {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 4px;
+}
+
+.versionSelector {
+  width: 100%;
+  font-family: inherit;
+}
+
+.noVersionsMessage {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 8px;
+  font-family: inherit;
+}
