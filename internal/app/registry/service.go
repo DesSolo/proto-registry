@@ -15,6 +15,7 @@ type Service interface {
 	GetProject(ctx context.Context, id int64) (*models.Project, error)
 	RegisterProject(ctx context.Context, project *models.Project) error
 	GetVersions(ctx context.Context, filter models.GetVersionsFilter) ([]*models.Version, error)
+	GetVersion(ctx context.Context, id int64) (*models.Version, error)
 	GetFiles(ctx context.Context, filter models.GetFilesFilter) ([]*models.File, error)
 	GetFileContent(ctx context.Context, projectID int64, ref, path string) (*models.FileContent, error)
 	RegisterFiles(ctx context.Context, version *models.Version, files []*models.File) error

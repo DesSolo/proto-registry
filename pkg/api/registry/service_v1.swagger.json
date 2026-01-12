@@ -305,42 +305,42 @@
           "ProtoRegistry"
         ]
       }
+    },
+    "/v1/versions/{id}": {
+      "get": {
+        "summary": "Детальная информация о версии",
+        "operationId": "ProtoRegistry_GetVersion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetVersionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "id версии",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ProtoRegistry"
+        ]
+      }
     }
   },
   "definitions": {
-    "GetVersionsResponseVersion": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64",
-          "title": "id версии"
-        },
-        "ref": {
-          "type": "string",
-          "title": "git reference"
-        },
-        "refType": {
-          "$ref": "#/definitions/v1RefType",
-          "title": "тип reference"
-        },
-        "commit": {
-          "type": "string",
-          "title": "коммит"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "title": "создано"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time",
-          "title": "обновлено"
-        }
-      },
-      "title": "Версия"
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -452,6 +452,16 @@
       },
       "title": "Ответ на запрос получения списка проектов"
     },
+    "v1GetVersionResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/definitions/v1Version",
+          "title": "версия"
+        }
+      },
+      "title": "Ответ на запрос детальной информации о версии"
+    },
     "v1GetVersionsResponse": {
       "type": "object",
       "properties": {
@@ -459,7 +469,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/GetVersionsResponseVersion"
+            "$ref": "#/definitions/v1Version"
           },
           "title": "версии"
         }
@@ -566,6 +576,39 @@
         }
       },
       "title": "Запрос на регистрацию проекта"
+    },
+    "v1Version": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "id версии"
+        },
+        "ref": {
+          "type": "string",
+          "title": "git reference"
+        },
+        "refType": {
+          "$ref": "#/definitions/v1RefType",
+          "title": "тип reference"
+        },
+        "commit": {
+          "type": "string",
+          "title": "коммит"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "создано"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "обновлено"
+        }
+      },
+      "title": "Версия"
     }
   }
 }

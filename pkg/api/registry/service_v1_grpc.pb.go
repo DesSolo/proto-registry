@@ -31,6 +31,8 @@ type ProtoRegistryClient interface {
 	RegisterProject(ctx context.Context, in *RegisterProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Список версий
 	GetVersions(ctx context.Context, in *GetVersionsRequest, opts ...grpc.CallOption) (*GetVersionsResponse, error)
+	// Детальная информация о версии
+	GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error)
 	// Список файлов
 	GetFiles(ctx context.Context, in *GetFilesRequest, opts ...grpc.CallOption) (*GetFilesResponse, error)
 	// Детальное представление файла
@@ -83,6 +85,15 @@ func (c *protoRegistryClient) GetVersions(ctx context.Context, in *GetVersionsRe
 	return out, nil
 }
 
+func (c *protoRegistryClient) GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error) {
+	out := new(GetVersionResponse)
+	err := c.cc.Invoke(ctx, "/services.v1.ProtoRegistry/GetVersion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *protoRegistryClient) GetFiles(ctx context.Context, in *GetFilesRequest, opts ...grpc.CallOption) (*GetFilesResponse, error) {
 	out := new(GetFilesResponse)
 	err := c.cc.Invoke(ctx, "/services.v1.ProtoRegistry/GetFiles", in, out, opts...)
@@ -122,6 +133,8 @@ type ProtoRegistryServer interface {
 	RegisterProject(context.Context, *RegisterProjectRequest) (*emptypb.Empty, error)
 	// Список версий
 	GetVersions(context.Context, *GetVersionsRequest) (*GetVersionsResponse, error)
+	// Детальная информация о версии
+	GetVersion(context.Context, *GetVersionRequest) (*GetVersionResponse, error)
 	// Список файлов
 	GetFiles(context.Context, *GetFilesRequest) (*GetFilesResponse, error)
 	// Детальное представление файла
@@ -146,6 +159,9 @@ func (UnimplementedProtoRegistryServer) RegisterProject(context.Context, *Regist
 }
 func (UnimplementedProtoRegistryServer) GetVersions(context.Context, *GetVersionsRequest) (*GetVersionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVersions not implemented")
+}
+func (UnimplementedProtoRegistryServer) GetVersion(context.Context, *GetVersionRequest) (*GetVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVersion not implemented")
 }
 func (UnimplementedProtoRegistryServer) GetFiles(context.Context, *GetFilesRequest) (*GetFilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFiles not implemented")
@@ -241,6 +257,24 @@ func _ProtoRegistry_GetVersions_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProtoRegistry_GetVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtoRegistryServer).GetVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/services.v1.ProtoRegistry/GetVersion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtoRegistryServer).GetVersion(ctx, req.(*GetVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProtoRegistry_GetFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetFilesRequest)
 	if err := dec(in); err != nil {
@@ -317,6 +351,10 @@ var ProtoRegistry_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetVersions",
 			Handler:    _ProtoRegistry_GetVersions_Handler,
+		},
+		{
+			MethodName: "GetVersion",
+			Handler:    _ProtoRegistry_GetVersion_Handler,
 		},
 		{
 			MethodName: "GetFiles",

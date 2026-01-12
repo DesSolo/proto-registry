@@ -18,6 +18,7 @@ type ProjectsRepository interface {
 
 type VersionsRepository interface {
 	GetVersions(ctx context.Context, filter models.GetVersionsFilter) ([]*models.Version, error)
+	GetVersion(ctx context.Context, id int64) (*models.Version, error)
 	UpsertVersion(ctx context.Context, version *models.Version) error
 }
 

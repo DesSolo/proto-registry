@@ -40,6 +40,14 @@ service ProtoRegistry {
 		};
 	};
 
+	// Детальная информация о версии
+	rpc GetVersion(GetVersionRequest) returns (GetVersionResponse) {
+		option (google.api.http) = {
+			get: "/v1/versions/{id}"
+		};
+	};
+
+
 	// Список файлов
 	rpc GetFiles(GetFilesRequest) returns (GetFilesResponse) {
 		option (google.api.http) = {
@@ -130,27 +138,38 @@ enum RefType {
 	REF_TYPE_TAG = 2;
 }
 
+// Версия
+message Version {
+	// id версии
+	int64 id = 1;
+	// git reference
+	string ref = 2;
+	// тип reference
+	RefType ref_type = 3;
+	// коммит
+	string commit = 4;
+	// создано
+	google.protobuf.Timestamp created_at = 5;
+	// обновлено
+	google.protobuf.Timestamp updated_at = 6;
+}
+
 // Ответ на запрос получения списка версий
 message GetVersionsResponse {
-
-	// Версия
-	message Version {
-		// id версии
-		int64 id = 1;
-		// git reference
-		string ref = 2;
-		// тип reference
-		RefType ref_type = 3;
-		// коммит
-		string commit = 4;
-		// создано
-		google.protobuf.Timestamp created_at = 5;
-		// обновлено
-		google.protobuf.Timestamp updated_at = 6;
-	}
-
 	// версии
 	repeated Version versions = 1;
+}
+
+// Зарос на получение детальной информации о версии
+message GetVersionRequest {
+	// id версии
+	int64 id = 1;
+}
+
+// Ответ на запрос детальной информации о версии
+message GetVersionResponse {
+	// версия
+	Version version = 1;
 }
 
 // Запрос на получения списка файлов

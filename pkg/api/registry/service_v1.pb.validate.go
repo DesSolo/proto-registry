@@ -1050,6 +1050,170 @@ var _ interface {
 	ErrorName() string
 } = GetVersionsRequestValidationError{}
 
+// Validate checks the field values on Version with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Version) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Version with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in VersionMultiError, or nil if none found.
+func (m *Version) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Version) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Ref
+
+	// no validation rules for RefType
+
+	// no validation rules for Commit
+
+	if all {
+		switch v := interface{}(m.GetCreatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, VersionValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, VersionValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return VersionValidationError{
+				field:  "CreatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, VersionValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, VersionValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return VersionValidationError{
+				field:  "UpdatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return VersionMultiError(errors)
+	}
+
+	return nil
+}
+
+// VersionMultiError is an error wrapping multiple validation errors returned
+// by Version.ValidateAll() if the designated constraints aren't met.
+type VersionMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m VersionMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m VersionMultiError) AllErrors() []error { return m }
+
+// VersionValidationError is the validation error returned by Version.Validate
+// if the designated constraints aren't met.
+type VersionValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e VersionValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e VersionValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e VersionValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e VersionValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e VersionValidationError) ErrorName() string { return "VersionValidationError" }
+
+// Error satisfies the builtin error interface
+func (e VersionValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sVersion.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = VersionValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = VersionValidationError{}
+
 // Validate checks the field values on GetVersionsResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
@@ -1185,6 +1349,241 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetVersionsResponseValidationError{}
+
+// Validate checks the field values on GetVersionRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetVersionRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetVersionRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetVersionRequestMultiError, or nil if none found.
+func (m *GetVersionRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetVersionRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return GetVersionRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetVersionRequestMultiError is an error wrapping multiple validation errors
+// returned by GetVersionRequest.ValidateAll() if the designated constraints
+// aren't met.
+type GetVersionRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetVersionRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetVersionRequestMultiError) AllErrors() []error { return m }
+
+// GetVersionRequestValidationError is the validation error returned by
+// GetVersionRequest.Validate if the designated constraints aren't met.
+type GetVersionRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetVersionRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetVersionRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetVersionRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetVersionRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetVersionRequestValidationError) ErrorName() string {
+	return "GetVersionRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetVersionRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetVersionRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetVersionRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetVersionRequestValidationError{}
+
+// Validate checks the field values on GetVersionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetVersionResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetVersionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetVersionResponseMultiError, or nil if none found.
+func (m *GetVersionResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetVersionResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetVersion()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GetVersionResponseValidationError{
+					field:  "Version",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GetVersionResponseValidationError{
+					field:  "Version",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetVersion()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetVersionResponseValidationError{
+				field:  "Version",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return GetVersionResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetVersionResponseMultiError is an error wrapping multiple validation errors
+// returned by GetVersionResponse.ValidateAll() if the designated constraints
+// aren't met.
+type GetVersionResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetVersionResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetVersionResponseMultiError) AllErrors() []error { return m }
+
+// GetVersionResponseValidationError is the validation error returned by
+// GetVersionResponse.Validate if the designated constraints aren't met.
+type GetVersionResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetVersionResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetVersionResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetVersionResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetVersionResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetVersionResponseValidationError) ErrorName() string {
+	return "GetVersionResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetVersionResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetVersionResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetVersionResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetVersionResponseValidationError{}
 
 // Validate checks the field values on GetFilesRequest with the rules defined
 // in the proto definition for this message. If any rules are violated, the
@@ -1858,175 +2257,6 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = RegisterFilesRequestValidationError{}
-
-// Validate checks the field values on GetVersionsResponse_Version with the
-// rules defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *GetVersionsResponse_Version) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on GetVersionsResponse_Version with the
-// rules defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// GetVersionsResponse_VersionMultiError, or nil if none found.
-func (m *GetVersionsResponse_Version) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *GetVersionsResponse_Version) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Id
-
-	// no validation rules for Ref
-
-	// no validation rules for RefType
-
-	// no validation rules for Commit
-
-	if all {
-		switch v := interface{}(m.GetCreatedAt()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, GetVersionsResponse_VersionValidationError{
-					field:  "CreatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, GetVersionsResponse_VersionValidationError{
-					field:  "CreatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return GetVersionsResponse_VersionValidationError{
-				field:  "CreatedAt",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if all {
-		switch v := interface{}(m.GetUpdatedAt()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, GetVersionsResponse_VersionValidationError{
-					field:  "UpdatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, GetVersionsResponse_VersionValidationError{
-					field:  "UpdatedAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return GetVersionsResponse_VersionValidationError{
-				field:  "UpdatedAt",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if len(errors) > 0 {
-		return GetVersionsResponse_VersionMultiError(errors)
-	}
-
-	return nil
-}
-
-// GetVersionsResponse_VersionMultiError is an error wrapping multiple
-// validation errors returned by GetVersionsResponse_Version.ValidateAll() if
-// the designated constraints aren't met.
-type GetVersionsResponse_VersionMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m GetVersionsResponse_VersionMultiError) Error() string {
-	msgs := make([]string, 0, len(m))
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m GetVersionsResponse_VersionMultiError) AllErrors() []error { return m }
-
-// GetVersionsResponse_VersionValidationError is the validation error returned
-// by GetVersionsResponse_Version.Validate if the designated constraints
-// aren't met.
-type GetVersionsResponse_VersionValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e GetVersionsResponse_VersionValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e GetVersionsResponse_VersionValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e GetVersionsResponse_VersionValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e GetVersionsResponse_VersionValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e GetVersionsResponse_VersionValidationError) ErrorName() string {
-	return "GetVersionsResponse_VersionValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e GetVersionsResponse_VersionValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sGetVersionsResponse_Version.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = GetVersionsResponse_VersionValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = GetVersionsResponse_VersionValidationError{}
 
 // Validate checks the field values on GetFilesResponse_File with the rules
 // defined in the proto definition for this message. If any rules are
