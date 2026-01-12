@@ -27,6 +27,10 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
+        path: 'project/:projectId/version/:versionId/file/*',
+        element: <MainPage />,
+      },
+      {
         path: 'settings',
         element: <SettingsPage />
       },

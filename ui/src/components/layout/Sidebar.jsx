@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Spin, Tag, Tree } from 'antd';
 import { FolderOutlined, DownOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
-import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate, useLocation } from 'react-router-dom';
 import Selector from '../common/Selector';
 import useVersions from '../../hooks/useVersions';
 import useFiles from '../../hooks/useFiles';
@@ -11,11 +11,27 @@ import styles from './Sidebar.module.css';
 
 const Sidebar = ({ onFileSelect }) => {
     const { projectId: projectIdFromUrl, versionId: versionIdFromUrl } = useParams();
+    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams(); // Оставляем для совместимости
     const navigate = useNavigate();
     const [selectedProject, setSelectedProject] = useState(null);
     const [selectedVersion, setSelectedVersion] = useState(null);
     const [urlVersionProcessed, setUrlVersionProcessed] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [urlInitializationComplete, setUrlInitializationComplete] = useState(false);
+    const [fileInitializedFromUrl, setFileInitializedFromUrl] = useState(false);
+    const [initialFilePathFromUrl, setInitialFilePathFromUrl] = useState(() => {
+        const match = location.pathname.match(/\/project\/[^\/]+\/version\/[^\/]+\/file\/(.+)/);
+        return match ? decodeURIComponent(match[1]) : null;
+    });
+
+    // Извлекаем путь к файлу из URL
+    const extractFilePath = React.useCallback(() => {
+        const match = location.pathname.match(/\/project\/[^\/]+\/version\/[^\/]+\/file\/(.+)/);
+        return match ? decodeURIComponent(match[1]) : null;
+    }, [location.pathname]);
+
+    const filePathFromUrl = extractFilePath();
 
     const {
         versions,
@@ -41,8 +57,9 @@ const Sidebar = ({ onFileSelect }) => {
                         // Загружаем версии для этого проекта
                         setVersionsProject(data.project.id);
 
-                        // Если указана версия, загружаем и её напрямую по ID
+                        // Если указана версия, пытаемся найти её
                         if (versionIdFromUrl) {
+                            // Сначала пробуем получить версию напрямую по ID
                             fetchVersionById(versionIdFromUrl)
                                 .then(versionData => {
                                     if (versionData.version) {
@@ -51,7 +68,9 @@ const Sidebar = ({ onFileSelect }) => {
                                     }
                                 })
                                 .catch(error => {
-                                    console.error('Error loading version from URL:', error);
+                                    console.error('Error loading version by ID from URL:', error);
+                                    // Если не удалось получить версию по ID,
+                                    // мы будем искать её по ref в другом useEffect
                                 });
                         }
                     }
@@ -62,35 +81,37 @@ const Sidebar = ({ onFileSelect }) => {
         }
     }, [projectIdFromUrl, selectedProject, setVersionsProject, versionIdFromUrl]);
 
-    // Устанавливаем выбранную версию, если она указана в URL и версии загружены
-    // (этот эффект оставляем на случай, если версия не была найдена напрямую)
+    // Поиск версии по ref, если не найдена по ID
     useEffect(() => {
-        if (versionIdFromUrl && versions.length > 0 && !selectedVersion && !urlVersionProcessed) {
-            // Сначала ищем по ID
-            let version = versions.find(v => v.id === versionIdFromUrl);
-
-            // Если не найдено по ID, пробуем найти по ref
-            if (!version) {
-                version = versions.find(v => v.ref === versionIdFromUrl);
-            }
-
-            if (version) {
-                setSelectedVersion(version);
+        if (versionIdFromUrl && versions.length > 0 && !selectedVersion) {
+            const versionByRef = versions.find(v => v.ref === versionIdFromUrl);
+            if (versionByRef) {
+                setSelectedVersion(versionByRef);
                 setUrlVersionProcessed(true);
             }
         }
-    }, [versions, versionIdFromUrl, selectedVersion, urlVersionProcessed]);
+    }, [versionIdFromUrl, versions, selectedVersion]);
 
-    // Обновляем URL при изменении проекта или версии
+    // Отслеживаем завершение инициализации
     useEffect(() => {
         if (selectedProject && selectedVersion) {
+            setUrlInitializationComplete(true);
+        }
+    }, [selectedProject, selectedVersion]);
+
+
+    // Обновляем URL при изменении проекта, версии или файла
+    useEffect(() => {
+        if (selectedProject && selectedVersion && selectedFile) {
+            navigate(`/project/${selectedProject.id}/version/${selectedVersion.id}/file/${selectedFile.path}`, { replace: true });
+        } else if (selectedProject && selectedVersion) {
             navigate(`/project/${selectedProject.id}/version/${selectedVersion.id}`, { replace: true });
         } else if (selectedProject) {
             navigate(`/project/${selectedProject.id}`, { replace: true });
         } else {
             navigate('/', { replace: true });
         }
-    }, [selectedProject, selectedVersion, navigate]);
+    }, [selectedProject, selectedVersion, selectedFile, navigate]);
 
     // Обновляем версии при изменении проекта
     useEffect(() => {
@@ -121,14 +142,57 @@ const Sidebar = ({ onFileSelect }) => {
         }
     }, [selectedVersion, setFilesVersion]);
 
+    // Обработка файла из URL
+    useEffect(() => {
+        console.log('File processing effect triggered', {
+            filePathFromUrl,
+            filesLength: files.length,
+            hasSelectedProject: !!selectedProject,
+            hasSelectedVersion: !!selectedVersion,
+            hasSelectedFile: !!selectedFile,
+            urlInitializationComplete
+        });
+
+        if (initialFilePathFromUrl && files.length > 0 && selectedProject && selectedVersion && urlInitializationComplete && !fileInitializedFromUrl) {
+            // Ищем файл по пути (может быть в поле path, filename или name)
+            const file = files.find(f =>
+                f.path === initialFilePathFromUrl ||
+                f.filename === initialFilePathFromUrl ||
+                f.name === initialFilePathFromUrl
+            );
+
+            if (file) {
+                console.log('File found and selected:', file);
+                // Вызываем onFileSelect для загрузки содержимого файла
+                setSelectedFile(file);
+                onFileSelect(file, selectedProject, selectedVersion);
+                setFileInitializedFromUrl(true); // Помечаем, что файл из URL уже инициализирован
+            } else {
+                console.log(`File not found: ${initialFilePathFromUrl}. Available files:`, files.map(f => f.path));
+                setFileInitializedFromUrl(true); // Помечаем, что попытка инициализации была
+            }
+        } else {
+            console.log('File processing condition not met', {
+                hasInitialFilePathFromUrl: !!initialFilePathFromUrl,
+                filesLength: files.length,
+                hasSelectedProject: !!selectedProject,
+                hasSelectedVersion: !!selectedVersion,
+                urlInitializationComplete,
+                fileInitializedFromUrl
+            });
+        }
+    }, [files, initialFilePathFromUrl, selectedProject, selectedVersion, selectedFile, urlInitializationComplete, onFileSelect]);
+
     const handleProjectSelect = (project) => {
         setSelectedProject(project);
         setSelectedVersion(null);
+        setSelectedFile(null); // Сбрасываем выбранный файл при смене проекта
     };
 
     const handleVersionChange = (value) => {
         const version = versions.find(v => v.id === value);
         setSelectedVersion(version);
+        setSelectedFile(null); // Сбрасываем выбранный файл при смене версии
     };
 
     const formatDate = (dateStr) => {
@@ -139,9 +203,8 @@ const Sidebar = ({ onFileSelect }) => {
     };
 
     // Преобразуем flat список файлов в tree structure
-    const buildTreeData = (files) => {
+    const buildTreeData = React.useMemo(() => {
         const root = { key: 'root', title: 'Корень', children: [] };
-        const map = {};
 
         files.forEach(file => {
             const parts = file.path.split('/');
@@ -151,26 +214,29 @@ const Sidebar = ({ onFileSelect }) => {
                 const part = parts[i];
                 const isFile = i === parts.length - 1;
 
-                if (!map[part]) {
-                    const node = {
-                        key: `${file.id}-${i}`,
+                // Создаем уникальный ключ для каждого узла
+                const nodeKey = parts.slice(0, i + 1).join('/');
+
+                // Ищем существующий узел с таким же ключом
+                let existingNode = current.children.find(child => child.key === nodeKey);
+
+                if (!existingNode) {
+                    existingNode = {
+                        key: nodeKey,
                         title: part,
                         isLeaf: isFile,
                         file: isFile ? file : null,
+                        children: isFile ? undefined : []
                     };
-                    map[part] = node;
-                    current.children = current.children || [];
-                    current.children.push(node);
+                    current.children.push(existingNode);
                 }
 
-                current = map[part];
+                current = existingNode;
             }
         });
 
         return root.children;
-    };
-
-    const treeData = buildTreeData(files);
+    }, [files]);
 
     return (
         <div className={styles.sidebarContainer}>
@@ -225,7 +291,7 @@ const Sidebar = ({ onFileSelect }) => {
                         </div>
                     ) : files.length > 0 ? (
                         <Tree
-                            treeData={treeData}
+                            treeData={buildTreeData}
                             className={styles.treeContainer}
                             defaultExpandAll
                             switcherIcon={ <DownOutlined /> }
@@ -247,9 +313,12 @@ const Sidebar = ({ onFileSelect }) => {
                             onSelect={(selectedKeys, info) => {
                                 const file = info.node.file;
                                 if (file && selectedProject && selectedVersion) {
+                                    console.log('Setting selected file from tree:', file);
+                                    setSelectedFile(file);
                                     onFileSelect(file, selectedProject, selectedVersion);
                                 }
                             }}
+                            selectedKeys={selectedFile ? [selectedFile.path] : []}
                             classNames={{
                                 node: styles.treeNode,
                                 nodeSelected: styles.treeNodeSelected
