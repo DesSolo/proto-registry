@@ -24,7 +24,7 @@ func (r *Repository) UpsertVersion(ctx context.Context, version *models.Version)
 
 	if err := r.db.QueryRow(ctx, query, version.ProjectID, version.Ref, version.RefType, version.Commit).Scan(&version.ID); err != nil {
 		if isForeignKeyError(err) {
-			return repositories.ErrNotExist
+			return repositories.ErrNotFound
 		}
 
 		return fmt.Errorf("db.QueryRow: %w", err)

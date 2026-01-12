@@ -41,12 +41,16 @@ func convertPaginationToModel(pagination *desc.Pagination) models.Pagination {
 func convertProjectsToDesc(projects []*models.Project) []*desc.Project {
 	result := make([]*desc.Project, 0, len(projects))
 	for _, project := range projects {
-		result = append(result, &desc.Project{
-			Id:        project.ID,
-			Name:      project.Name,
-			UpdatedAt: timestamppb.New(project.UpdatedAt),
-		})
+		result = append(result, convertProjectToDesc(project))
 	}
 
 	return result
+}
+
+func convertProjectToDesc(project *models.Project) *desc.Project {
+	return &desc.Project{
+		Id:        project.ID,
+		Name:      project.Name,
+		UpdatedAt: timestamppb.New(project.UpdatedAt),
+	}
 }

@@ -18,6 +18,13 @@ service ProtoRegistry {
 		};
 	};
 
+	// Детальная информация о проекте
+	rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
+		option (google.api.http) = {
+			get: "/v1/projects/{id}"
+		};
+	};
+
 	// Зарегистрировать проект
 	rpc RegisterProject(RegisterProjectRequest) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
@@ -86,6 +93,18 @@ message Project {
 message GetProjectsResponse {
 	// проекты
 	repeated Project projects = 1;
+}
+
+// Запрос на получение детальной информации о проекте
+message GetProjectRequest {
+	// id проекта
+	int64 id = 1;
+}
+
+// Ответ на запрос детальной информации о проекте
+message GetProjectResponse {
+	// проект
+	Project project = 1;
 }
 
 // Запрос на регистрацию проекта

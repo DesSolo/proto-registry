@@ -25,6 +25,8 @@ const _ = grpc.SupportPackageIsVersion7
 type ProtoRegistryClient interface {
 	// Список проектов
 	GetProjects(ctx context.Context, in *GetProjectsRequest, opts ...grpc.CallOption) (*GetProjectsResponse, error)
+	// Детальная информация о проекте
+	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	// Зарегистрировать проект
 	RegisterProject(ctx context.Context, in *RegisterProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Список версий
@@ -48,6 +50,15 @@ func NewProtoRegistryClient(cc grpc.ClientConnInterface) ProtoRegistryClient {
 func (c *protoRegistryClient) GetProjects(ctx context.Context, in *GetProjectsRequest, opts ...grpc.CallOption) (*GetProjectsResponse, error) {
 	out := new(GetProjectsResponse)
 	err := c.cc.Invoke(ctx, "/services.v1.ProtoRegistry/GetProjects", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protoRegistryClient) GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error) {
+	out := new(GetProjectResponse)
+	err := c.cc.Invoke(ctx, "/services.v1.ProtoRegistry/GetProject", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +116,8 @@ func (c *protoRegistryClient) RegisterFiles(ctx context.Context, in *RegisterFil
 type ProtoRegistryServer interface {
 	// Список проектов
 	GetProjects(context.Context, *GetProjectsRequest) (*GetProjectsResponse, error)
+	// Детальная информация о проекте
+	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	// Зарегистрировать проект
 	RegisterProject(context.Context, *RegisterProjectRequest) (*emptypb.Empty, error)
 	// Список версий
@@ -124,6 +137,9 @@ type UnimplementedProtoRegistryServer struct {
 
 func (UnimplementedProtoRegistryServer) GetProjects(context.Context, *GetProjectsRequest) (*GetProjectsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjects not implemented")
+}
+func (UnimplementedProtoRegistryServer) GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
 }
 func (UnimplementedProtoRegistryServer) RegisterProject(context.Context, *RegisterProjectRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterProject not implemented")
@@ -167,6 +183,24 @@ func _ProtoRegistry_GetProjects_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtoRegistryServer).GetProjects(ctx, req.(*GetProjectsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtoRegistry_GetProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtoRegistryServer).GetProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/services.v1.ProtoRegistry/GetProject",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtoRegistryServer).GetProject(ctx, req.(*GetProjectRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -271,6 +305,10 @@ var ProtoRegistry_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProjects",
 			Handler:    _ProtoRegistry_GetProjects_Handler,
+		},
+		{
+			MethodName: "GetProject",
+			Handler:    _ProtoRegistry_GetProject_Handler,
 		},
 		{
 			MethodName: "RegisterProject",

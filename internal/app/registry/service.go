@@ -12,6 +12,7 @@ import (
 
 type Service interface {
 	GetProjects(ctx context.Context, filter models.GetProjectsFilter) ([]*models.Project, error)
+	GetProject(ctx context.Context, id int64) (*models.Project, error)
 	RegisterProject(ctx context.Context, project *models.Project) error
 	GetVersions(ctx context.Context, filter models.GetVersionsFilter) ([]*models.Version, error)
 	GetFiles(ctx context.Context, filter models.GetFilesFilter) ([]*models.File, error)

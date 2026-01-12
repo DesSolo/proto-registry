@@ -12,7 +12,7 @@ import (
 // RegisterFiles регистирует файлы
 func (s *Service) RegisterFiles(ctx context.Context, version *models.Version, files []*models.File) error {
 	if err := s.versionsRepo.UpsertVersion(ctx, version); err != nil {
-		if errors.Is(err, repositories.ErrNotExist) {
+		if errors.Is(err, repositories.ErrNotFound) {
 			return ErrNotFound
 		}
 

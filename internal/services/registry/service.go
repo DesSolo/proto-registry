@@ -12,6 +12,7 @@ type GitlabClient interface {
 
 type ProjectsRepository interface {
 	GetProjects(ctx context.Context, filter models.GetProjectsFilter) ([]*models.Project, error)
+	GetProject(ctx context.Context, id int64) (*models.Project, error)
 	UpsertProject(ctx context.Context, project *models.Project) error
 }
 
