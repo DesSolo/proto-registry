@@ -6,9 +6,17 @@ export const fetchProjects = (name = '') => {
     return api.projects.getAll(name);
 };
 
+export const fetchProjectById = (id) => {
+    return api.projects.getById(id);
+};
+
 // Versions
 export const fetchVersionsByProjectId = (projectId) => {
     return api.versions.getByProjectId(projectId);
+};
+
+export const fetchVersionById = (id) => {
+    return api.versions.getById(id);
 };
 
 // Files

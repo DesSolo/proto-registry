@@ -1,15 +1,21 @@
 // src/components/layout/Sidebar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, Spin, Tag, Tree } from 'antd';
 import { FolderOutlined, DownOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
+import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import Selector from '../common/Selector';
 import useVersions from '../../hooks/useVersions';
 import useFiles from '../../hooks/useFiles';
+import { fetchProjectById, fetchVersionById } from '../../api';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ onFileSelect }) => {
+    const { projectId: projectIdFromUrl, versionId: versionIdFromUrl } = useParams();
+    const [searchParams, setSearchParams] = useSearchParams(); // Оставляем для совместимости
+    const navigate = useNavigate();
     const [selectedProject, setSelectedProject] = useState(null);
     const [selectedVersion, setSelectedVersion] = useState(null);
+    const [urlVersionProcessed, setUrlVersionProcessed] = useState(false);
 
     const {
         versions,
@@ -23,8 +29,71 @@ const Sidebar = ({ onFileSelect }) => {
         setVersion: setFilesVersion
     } = useFiles(selectedVersion?.id);
 
+    // Инициализация из URL параметров
+    useEffect(() => {
+        if (projectIdFromUrl && !selectedProject) {
+            // Загружаем проект по ID из URL
+            fetchProjectById(projectIdFromUrl)
+                .then(data => {
+                    if (data.project) {
+                        setSelectedProject(data.project);
+
+                        // Загружаем версии для этого проекта
+                        setVersionsProject(data.project.id);
+
+                        // Если указана версия, загружаем и её напрямую по ID
+                        if (versionIdFromUrl) {
+                            fetchVersionById(versionIdFromUrl)
+                                .then(versionData => {
+                                    if (versionData.version) {
+                                        setSelectedVersion(versionData.version);
+                                        setUrlVersionProcessed(true);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error loading version from URL:', error);
+                                });
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading project from URL:', error);
+                });
+        }
+    }, [projectIdFromUrl, selectedProject, setVersionsProject, versionIdFromUrl]);
+
+    // Устанавливаем выбранную версию, если она указана в URL и версии загружены
+    // (этот эффект оставляем на случай, если версия не была найдена напрямую)
+    useEffect(() => {
+        if (versionIdFromUrl && versions.length > 0 && !selectedVersion && !urlVersionProcessed) {
+            // Сначала ищем по ID
+            let version = versions.find(v => v.id === versionIdFromUrl);
+
+            // Если не найдено по ID, пробуем найти по ref
+            if (!version) {
+                version = versions.find(v => v.ref === versionIdFromUrl);
+            }
+
+            if (version) {
+                setSelectedVersion(version);
+                setUrlVersionProcessed(true);
+            }
+        }
+    }, [versions, versionIdFromUrl, selectedVersion, urlVersionProcessed]);
+
+    // Обновляем URL при изменении проекта или версии
+    useEffect(() => {
+        if (selectedProject && selectedVersion) {
+            navigate(`/project/${selectedProject.id}/version/${selectedVersion.id}`, { replace: true });
+        } else if (selectedProject) {
+            navigate(`/project/${selectedProject.id}`, { replace: true });
+        } else {
+            navigate('/', { replace: true });
+        }
+    }, [selectedProject, selectedVersion, navigate]);
+
     // Обновляем версии при изменении проекта
-    React.useEffect(() => {
+    useEffect(() => {
         if (selectedProject) {
             setVersionsProject(selectedProject.id);
         } else {
@@ -32,8 +101,19 @@ const Sidebar = ({ onFileSelect }) => {
         }
     }, [selectedProject, setVersionsProject]);
 
+    // Синхронизируем версии из URL только один раз при загрузке
+    useEffect(() => {
+        if (versionIdFromUrl && versions.length > 0 && !selectedVersion && !urlVersionProcessed) {
+            const version = versions.find(v => v.id === versionIdFromUrl);
+            if (version) {
+                setSelectedVersion(version);
+                setUrlVersionProcessed(true);
+            }
+        }
+    }, [versions, versionIdFromUrl, selectedVersion, urlVersionProcessed]);
+
     // Обновляем файлы при изменении версии
-    React.useEffect(() => {
+    useEffect(() => {
         if (selectedVersion) {
             setFilesVersion(selectedVersion.id);
         } else {
@@ -94,7 +174,10 @@ const Sidebar = ({ onFileSelect }) => {
 
     return (
         <div className={styles.sidebarContainer}>
-            <Selector onProjectSelect={handleProjectSelect} />
+            <Selector
+                onProjectSelect={handleProjectSelect}
+                selectedProject={selectedProject}
+            />
 
             {loadingVersions ? (
                 <div style={{ textAlign: 'center', padding: '16px' }}>

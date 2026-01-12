@@ -1,10 +1,10 @@
 // src/components/common/Selector.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AutoComplete, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import useProjects from '../../hooks/useProjects';
 
-const Selector = ({ onProjectSelect }) => {
+const Selector = ({ onProjectSelect, selectedProject }) => {
     const [inputValue, setInputValue] = useState('');
     const { projects, loading, searchProjects } = useProjects('');
 
@@ -16,6 +16,15 @@ const Selector = ({ onProjectSelect }) => {
             project: p,
         }));
     }, [projects]);
+
+    // Обновляем inputValue при изменении selectedProject
+    useEffect(() => {
+        if (selectedProject) {
+            setInputValue(selectedProject.name);
+        } else {
+            setInputValue('');
+        }
+    }, [selectedProject]);
 
     const handleSelect = (value, option) => {
         onProjectSelect?.(option.project);
