@@ -144,15 +144,6 @@ const Sidebar = ({ onFileSelect }) => {
 
     // Обработка файла из URL
     useEffect(() => {
-        console.log('File processing effect triggered', {
-            filePathFromUrl,
-            filesLength: files.length,
-            hasSelectedProject: !!selectedProject,
-            hasSelectedVersion: !!selectedVersion,
-            hasSelectedFile: !!selectedFile,
-            urlInitializationComplete
-        });
-
         if (initialFilePathFromUrl && files.length > 0 && selectedProject && selectedVersion && urlInitializationComplete && !fileInitializedFromUrl) {
             // Ищем файл по пути (может быть в поле path, filename или name)
             const file = files.find(f =>
@@ -162,24 +153,13 @@ const Sidebar = ({ onFileSelect }) => {
             );
 
             if (file) {
-                console.log('File found and selected:', file);
                 // Вызываем onFileSelect для загрузки содержимого файла
                 setSelectedFile(file);
                 onFileSelect(file, selectedProject, selectedVersion);
                 setFileInitializedFromUrl(true); // Помечаем, что файл из URL уже инициализирован
             } else {
-                console.log(`File not found: ${initialFilePathFromUrl}. Available files:`, files.map(f => f.path));
                 setFileInitializedFromUrl(true); // Помечаем, что попытка инициализации была
             }
-        } else {
-            console.log('File processing condition not met', {
-                hasInitialFilePathFromUrl: !!initialFilePathFromUrl,
-                filesLength: files.length,
-                hasSelectedProject: !!selectedProject,
-                hasSelectedVersion: !!selectedVersion,
-                urlInitializationComplete,
-                fileInitializedFromUrl
-            });
         }
     }, [files, initialFilePathFromUrl, selectedProject, selectedVersion, selectedFile, urlInitializationComplete, onFileSelect]);
 
@@ -257,7 +237,7 @@ const Sidebar = ({ onFileSelect }) => {
                         className={styles.versionSelector}
                         size="large"
                         placeholder="Выберите версию"
-                        dropdownMatchSelectWidth={false}
+                        popupMatchSelectWidth={false}
                         optionLabelProp="label"
                     >
                         {versions.map((v) => (

@@ -38,13 +38,15 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
             <Card
                 title="Файл не выбран"
                 className={styles.contractCard}
-                bodyStyle={{
-                    padding: '40px',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flex: 1
+                styles={{
+                    body: {
+                        padding: '40px',
+                        textAlign: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flex: 1
+                    }
                 }}
             >
                 <div className={styles.placeholderText}>
