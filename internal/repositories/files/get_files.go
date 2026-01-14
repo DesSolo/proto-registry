@@ -14,11 +14,11 @@ func (r *Repository) GetFiles(ctx context.Context, filter models.GetFilesFilter)
 		From("files")
 
 	if filter.Limit > 0 {
-		query = query.Limit(uint64(filter.Limit))
+		query = query.Limit(filter.Limit)
 	}
 
 	if filter.Offset > 0 {
-		query = query.Offset(uint64(filter.Offset))
+		query = query.Offset(filter.Offset)
 	}
 
 	if filter.VersionID > 0 {

@@ -18,11 +18,11 @@ func (i *Implementation) GetFile(ctx context.Context, req *desc.GetFileRequest) 
 	file, err := i.service.GetFileContent(ctx, req.GetProjectId(), req.GetRef(), req.GetPath())
 	if err != nil {
 		if errors.Is(err, registry.ErrValidationFailed) {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
+			return nil, status.Error(codes.InvalidArgument, err.Error()) // nolint:wrapcheck
 		}
 
 		if errors.Is(err, registry.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, err.Error())
+			return nil, status.Error(codes.NotFound, err.Error()) // nolint:wrapcheck
 		}
 
 		slog.ErrorContext(ctx, "service.GetFileContent", slog.String("err", err.Error()))

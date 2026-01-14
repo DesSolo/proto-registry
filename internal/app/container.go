@@ -102,7 +102,7 @@ func (c *container) Service() registry.Service {
 		clientsOptions := c.Config().Clients
 
 		c.service = registry_service.NewService(
-			gitlab.NewClient(http.DefaultClient, clientsOptions.Gitlab.ApiURL, clientsOptions.Gitlab.Token),
+			gitlab.NewClient(http.DefaultClient, clientsOptions.Gitlab.APIUrl, clientsOptions.Gitlab.Token),
 			projects.NewRepository(c.Pool()),
 			versions.NewRepository(c.Pool()),
 			files.NewRepository(c.Pool()),

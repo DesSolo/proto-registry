@@ -1,3 +1,6 @@
+OS := $(shell uname -s | tr A-Z a-z)
+ARCH := $(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+
 .prebin:
 	mkdir -p ${LOCAL_BIN}
 
@@ -10,13 +13,20 @@ bin-deps:
 	GOBIN=$(LOCAL_BIN) go install github.com/envoyproxy/protoc-gen-validate@v1.2.1
 	GOBIN=$(LOCAL_BIN) go install github.com/dessolo/protoc-gen-stub@latest
 
+LINT_VERSION := 2.6.1
+
+.install-lint:
+	curl -Ls https://github.com/golangci/golangci-lint/releases/download/v${LINT_VERSION}/golangci-lint-${LINT_VERSION}-${OS}-${ARCH}.tar.gz | \
+		tar xvz --strip-components=1 -C ${LOCAL_BIN} golangci-lint-${LINT_VERSION}-${OS}-${ARCH}/golangci-lint
+
 GOOSE_VERSION := v3.26.0
 
-install-goose:
+.install-goose:
 	curl -Ls https://github.com/pressly/goose/releases/download/${GOOSE_VERSION}/goose_linux_x86_64 --output ${LOCAL_BIN}/goose
 	chmod +x ${LOCAL_BIN}/goose
 
 install-deps: \
 	.prebin \
 	bin-deps \
-	install-goose
+	.install-lint \
+	.install-goose

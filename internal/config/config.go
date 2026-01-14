@@ -13,14 +13,14 @@ type Config struct {
 	} `yaml:"database"`
 	Clients struct {
 		Gitlab struct {
-			ApiURL string `yaml:"api_url"`
+			APIUrl string `yaml:"api_url"`
 			Token  string `yaml:"token"`
 		}
 	} `yaml:"clients"`
 }
 
 func NewFromFile(path string) (*Config, error) {
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) // nolint:gosec
 	if err != nil {
 		return nil, fmt.Errorf("os.ReadFile: %w", err)
 	}

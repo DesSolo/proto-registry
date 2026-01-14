@@ -41,7 +41,7 @@
             "in": "query",
             "required": false,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           },
           {
             "name": "pagination.offset",
@@ -49,7 +49,7 @@
             "in": "query",
             "required": false,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           },
           {
             "name": "versionId",
@@ -169,7 +169,7 @@
             "in": "query",
             "required": false,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           },
           {
             "name": "pagination.offset",
@@ -177,7 +177,7 @@
             "in": "query",
             "required": false,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           },
           {
             "name": "name",
@@ -282,7 +282,7 @@
             "in": "query",
             "required": false,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           },
           {
             "name": "pagination.offset",
@@ -290,7 +290,7 @@
             "in": "query",
             "required": false,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           },
           {
             "name": "projectId",
@@ -481,12 +481,12 @@
       "properties": {
         "limit": {
           "type": "string",
-          "format": "int64",
+          "format": "uint64",
           "title": "лимит"
         },
         "offset": {
           "type": "string",
-          "format": "int64",
+          "format": "uint64",
           "title": "отступ"
         }
       },

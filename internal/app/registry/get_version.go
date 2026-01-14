@@ -18,7 +18,7 @@ func (i *Implementation) GetVersion(ctx context.Context, req *desc.GetVersionReq
 	version, err := i.service.GetVersion(ctx, req.GetId())
 	if err != nil {
 		if errors.Is(err, registry.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, err.Error())
+			return nil, status.Error(codes.NotFound, err.Error()) // nolint:wrapcheck
 		}
 
 		slog.ErrorContext(ctx, "service.GetVersion", "err", err)

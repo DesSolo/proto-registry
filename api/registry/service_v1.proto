@@ -74,9 +74,9 @@ service ProtoRegistry {
 // Пагинация
 message Pagination {
 	// лимит
-	int64 limit = 1;
+	uint64 limit = 1;
 	// отступ
-	int64 offset = 2;
+	uint64 offset = 2;
 }
 
 // Запрос на получения списка проктов

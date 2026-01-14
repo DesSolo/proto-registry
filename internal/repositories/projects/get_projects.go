@@ -16,11 +16,11 @@ func (r *Repository) GetProjects(ctx context.Context, filter models.GetProjectsF
 		From("projects")
 
 	if filter.Limit > 0 {
-		query = query.Limit(uint64(filter.Limit))
+		query = query.Limit(filter.Limit)
 	}
 
 	if filter.Offset > 0 {
-		query = query.Offset(uint64(filter.Offset))
+		query = query.Offset(filter.Offset)
 	}
 
 	if filter.Name != nil {

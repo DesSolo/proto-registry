@@ -1,8 +1,8 @@
 package models
 
 type Pagination struct {
-	Limit  int64
-	Offset int64
+	Limit  uint64
+	Offset uint64
 }
 
 type GetProjectsFilter struct {

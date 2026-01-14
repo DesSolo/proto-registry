@@ -22,7 +22,7 @@ func (i *Implementation) RegisterFiles(ctx context.Context, req *desc.RegisterFi
 	)
 	if err != nil {
 		if errors.Is(err, registry.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, err.Error())
+			return nil, status.Error(codes.NotFound, err.Error()) // nolint:wrapcheck
 		}
 
 		slog.ErrorContext(ctx, "service.RegisterFiles", "err", err)

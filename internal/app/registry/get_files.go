@@ -51,6 +51,5 @@ func convertFileTypeToDesc(fileType models.FileType) desc.FileType {
 		return desc.FileType_FILE_TYPE_OPENAPI
 	default:
 		return desc.FileType_FILE_TYPE_UNKNOWN
-
 	}
 }

@@ -14,7 +14,7 @@ func New() *App {
 func (a *App) Run(ctx context.Context) error {
 	di := newContainer()
 
-	if err := di.Server().Run(ctx, di.Services()...); err != nil {
+	if err := di.Server().Run(ctx, di.Services()...); err != nil { // nolint:contextcheck
 		return fmt.Errorf("failed to run server: %w", err)
 	}
 

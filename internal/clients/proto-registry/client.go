@@ -1,4 +1,4 @@
-package proto_registry
+package protoregistry
 
 import desc "proto-registry/pkg/api/registry"
 

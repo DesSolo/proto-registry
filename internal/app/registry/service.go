@@ -41,10 +41,10 @@ func (i *Implementation) RegisterGRPC(server *grpc.Server) {
 
 // RegisterGateway register HTTP handlers.
 func (i *Implementation) RegisterGateway(ctx context.Context, mux *runtime.ServeMux) error {
-	return desc.RegisterProtoRegistryHandlerServer(ctx, mux, i)
+	return desc.RegisterProtoRegistryHandlerServer(ctx, mux, i) // nolint:wrapcheck
 }
 
 // RegisterGatewayFromEndpoint register HTTP handlers for specific endpoint.
 func (i *Implementation) RegisterGatewayFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
-	return desc.RegisterProtoRegistryHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	return desc.RegisterProtoRegistryHandlerFromEndpoint(ctx, mux, endpoint, opts) // nolint:wrapcheck
 }

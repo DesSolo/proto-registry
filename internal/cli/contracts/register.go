@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"proto-registry/internal/clients/proto_registry"
+	registry "proto-registry/internal/clients/proto-registry"
 	"proto-registry/internal/models"
 	desc "proto-registry/pkg/api/registry"
 )
@@ -31,7 +31,7 @@ func newRegisterCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register",
 		Short: "Register proto/openapi contracts",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			refType := decodeRefType(refTypeS)
 			if refType == models.RefTypeUnknown {
 				return fmt.Errorf("invalid ref type: %s", refTypeS)
@@ -47,7 +47,7 @@ func newRegisterCommand() *cobra.Command {
 				return fmt.Errorf("newProtoRegistryClient: %w", err)
 			}
 
-			err = client.RegisterFiles(cmd.Context(), &proto_registry.RegisterFilesRequest{
+			err = client.RegisterFiles(cmd.Context(), &registry.RegisterFilesRequest{
 				ProjectID:   projectID,
 				ProjectName: projectName,
 				Ref:         ref,
@@ -95,17 +95,17 @@ func decodeRefType(refType string) models.RefType {
 	}
 }
 
-func newProtoRegistryClient(target string) (*proto_registry.Client, error) {
+func newProtoRegistryClient(target string) (*registry.Client, error) {
 	conn, err := grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, fmt.Errorf("grpc.NewClient: %w", err)
 	}
 
-	return proto_registry.NewClient(desc.NewProtoRegistryClient(conn)), nil
+	return registry.NewClient(desc.NewProtoRegistryClient(conn)), nil
 }
 
-func findFiles(roots []string) ([]*proto_registry.File, error) {
-	var files []*proto_registry.File
+func findFiles(roots []string) ([]*registry.File, error) {
+	var files []*registry.File
 
 	for _, root := range roots {
 		err := filepath.Walk(root, func(path string, info fs.FileInfo, err error) error {
@@ -118,7 +118,7 @@ func findFiles(roots []string) ([]*proto_registry.File, error) {
 			}
 
 			if isProtoFile(path) {
-				files = append(files, &proto_registry.File{
+				files = append(files, &registry.File{
 					FileType: models.FileTypeProto,
 					Path:     path,
 				})
@@ -126,7 +126,7 @@ func findFiles(roots []string) ([]*proto_registry.File, error) {
 			}
 
 			if isOpenAPIFile(path) {
-				files = append(files, &proto_registry.File{
+				files = append(files, &registry.File{
 					FileType: models.FileTypeOpenAPI,
 					Path:     path,
 				})
@@ -153,7 +153,7 @@ func isOpenAPIFile(path string) bool {
 		return false
 	}
 
-	f, err := os.Open(path)
+	f, err := os.Open(path) // nolint:gosec
 	if err != nil {
 		return false
 	}
