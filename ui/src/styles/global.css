@@ -9,6 +9,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  color: #e0e0e0;
 }
 
 /* Контейнеры */
@@ -16,6 +18,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: transparent;
 }
 
 /* Типографика */
@@ -23,24 +26,160 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0.5em;
   font-weight: 500;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 /* Прокрутка */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #e0e0e0;
-  border-radius: 4px;
+  background: rgba(25, 25, 35, 0.5);
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #666;
-  border-radius: 4px;
+  background: linear-gradient(45deg, #1e90ff, #0077be);
+  border-radius: 5px;
+  border: 2px solid rgba(25, 25, 35, 0.5);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1e90ff;
+  background: linear-gradient(45deg, #0077be, #1e90ff);
+}
+
+/* Кнопки */
+button {
+  transition: all 0.3s ease;
+}
+
+/* Карточки */
+.ant-card {
+  background: rgba(30, 30, 40, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(80, 80, 100, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+/* Инпуты */
+.ant-input {
+  background: rgba(20, 20, 30, 0.7);
+  border: 1px solid rgba(80, 80, 100, 0.5);
+  color: #e0e0e0;
+  border-radius: 8px;
+}
+
+/* Выпадающие списки */
+.ant-select-selector {
+  background: rgba(20, 20, 30, 0.7) !important;
+  border: 1px solid rgba(80, 80, 100, 0.5) !important;
+  color: #e0e0e0 !important;
+  border-radius: 8px !important;
+}
+
+/* Меню */
+.ant-menu {
+  background: transparent !important;
+}
+
+/* Таблицы */
+.ant-table {
+  background: rgba(30, 30, 40, 0.6);
+  border-radius: 8px;
+}
+
+.ant-table-thead > tr > th {
+  background: rgba(40, 40, 50, 0.8) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(80, 80, 100, 0.5) !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(60, 60, 70, 0.3) !important;
+}
+
+/* Дерево файлов */
+.ant-tree {
+  background: transparent !important;
+}
+
+.ant-tree-node-content-wrapper {
+  color: #e0e0e0 !important;
+}
+
+/* Код */
+.code-block {
+  background: rgba(15, 15, 25, 0.8) !important;
+  border: 1px solid rgba(80, 80, 100, 0.3) !important;
+  border-radius: 8px !important;
+  overflow-x: auto;
+}
+
+/* Синтаксис кода */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #637777 !important;
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: #c0c5ce !important;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #d5537e !important;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #78ccf0 !important;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #f0c674 !important;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #1e90ff !important;
+}
+
+.token.function {
+  color: #78ccf0 !important;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #c491c4 !important;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold !important;
+}
+
+.token.italic {
+  font-style: italic !important;
 }
