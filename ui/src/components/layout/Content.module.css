@@ -18,20 +18,15 @@
 }
 
 .container {
-  background: #1e1e1e; /* Темный фон для кода */
-  border-radius: 0 0 8px 8px; /* Только нижние углы, так как заголовок уже имеет свои */
   padding: 16px;
   font-family: 'Fira Code', 'JetBrains Mono', monospace !important;
-  color: #d4d4d4; /* Светлый текст для темной темы */
   line-height: 1.5;
-  font-size: 14px;
   white-space: pre;
   word-wrap: break-word;
-  overflow: auto;
+  overflow-y: auto; /* Добавляем вертикальную прокрутку */
   min-height: 300px;
-  border-top: 1px solid #3e3e3e;
+  max-height: calc(100vh - 150px); /* Ограничиваем максимальную высоту */
   flex: 1;
-  /* Убираем стили, которые могут конфликтовать с Prism.js */
 }
 
 /* Стили для строк с номерами */
@@ -39,6 +34,7 @@
   display: flex;
   align-items: baseline;
   min-height: 1.5em;
+  width: 100%;
 }
 
 .lineNumber {
@@ -61,6 +57,7 @@
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-all;
+  min-width: 0; /* Позволяет элементу сжиматься */
 }
 
 .placeholderText {
