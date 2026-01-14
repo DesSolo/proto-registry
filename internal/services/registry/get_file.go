@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -33,13 +34,18 @@ func (s *Service) GetFileContent(ctx context.Context, projectID int64, ref, path
 }
 
 func validateFilePath(path string) error {
-	if !strings.HasSuffix(path, ".proto") || strings.HasSuffix(path, ".json") {
-		return errors.New("file should be proto or openapi")
-	}
-
 	if strings.HasPrefix(path, "/") {
 		return errors.New("path contains leading slash")
 	}
 
-	return nil
+	ext := filepath.Ext(path)
+	switch ext {
+	case ".proto", ".json":
+		if ext == ".json" && !strings.HasSuffix(path, ".swagger.json") {
+			return errors.New("JSON file must be swagger format")
+		}
+		return nil
+	default:
+		return errors.New("unsupported file extension: must be .proto or .swagger.json")
+	}
 }

@@ -19,7 +19,7 @@ import (
 
 func newRegisterCommand() *cobra.Command {
 	var (
-		root         string
+		roots        []string
 		registryAddr string
 		projectID    int64
 		projectName  string
@@ -37,7 +37,7 @@ func newRegisterCommand() *cobra.Command {
 				return fmt.Errorf("invalid ref type: %s", refTypeS)
 			}
 
-			files, err := findFiles(root)
+			files, err := findFiles(roots)
 			if err != nil {
 				return fmt.Errorf("findFiles: %w", err)
 			}
@@ -63,7 +63,7 @@ func newRegisterCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&root, "root", "api", "Root directory")
+	cmd.Flags().StringSliceVar(&roots, "root", []string{"api", "docs"}, "Root directories")
 	cmd.Flags().StringVar(&registryAddr, "registry-addr", "", "Address of the proto registry")
 	cmd.Flags().Int64Var(&projectID, "project-id", 0, "Project ID")
 	cmd.Flags().StringVar(&projectName, "project-name", "", "Project name")
@@ -104,39 +104,41 @@ func newProtoRegistryClient(target string) (*proto_registry.Client, error) {
 	return proto_registry.NewClient(desc.NewProtoRegistryClient(conn)), nil
 }
 
-func findFiles(root string) ([]*proto_registry.File, error) {
+func findFiles(roots []string) ([]*proto_registry.File, error) {
 	var files []*proto_registry.File
 
-	err := filepath.Walk(root, func(path string, info fs.FileInfo, err error) error {
+	for _, root := range roots {
+		err := filepath.Walk(root, func(path string, info fs.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if info.IsDir() {
+				return nil
+			}
+
+			if isProtoFile(path) {
+				files = append(files, &proto_registry.File{
+					FileType: models.FileTypeProto,
+					Path:     path,
+				})
+				return nil
+			}
+
+			if isOpenAPIFile(path) {
+				files = append(files, &proto_registry.File{
+					FileType: models.FileTypeOpenAPI,
+					Path:     path,
+				})
+				return nil
+			}
+
+			return nil
+		})
+
 		if err != nil {
-			return err
+			return nil, fmt.Errorf("filepath.Walk: %w", err)
 		}
-
-		if info.IsDir() {
-			return nil
-		}
-
-		if isProtoFile(path) {
-			files = append(files, &proto_registry.File{
-				FileType: models.FileTypeProto,
-				Path:     path,
-			})
-			return nil
-		}
-
-		if isOpenAPIFile(path) {
-			files = append(files, &proto_registry.File{
-				FileType: models.FileTypeOpenAPI,
-				Path:     path,
-			})
-			return nil
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return nil, fmt.Errorf("filepath.Walk: %w", err)
 	}
 
 	return files, nil
