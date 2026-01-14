@@ -1,15 +1,12 @@
 import React from 'react';
-import { Layout, Avatar, Dropdown, Menu, Button, Space, Tooltip } from 'antd';
-import { SettingOutlined, QuestionCircleOutlined, SkinOutlined, SunOutlined, MoonOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Dropdown, Menu, Button, Space } from 'antd';
+import { SettingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
 import styles from './Header.module.css';
 
 const { Header: AntdHeader } = Layout;
 
 const Header = () => {
-    const { toggleTheme, currentTheme } = useTheme();
-
     const userMenu = {
         items: [
             {
@@ -31,23 +28,6 @@ const Header = () => {
         ]
     };
 
-    // Determine the current theme icon and handle click
-    let themeIcon;
-    if (currentTheme === 'dark') {
-        themeIcon = <MoonOutlined />;
-    } else {
-        // For system theme, determine based on actual system preference
-        const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        themeIcon = isSystemDark ? <MoonOutlined /> : <SunOutlined />;
-    }
-
-    // Handle theme toggle - cycle between dark and system
-    const handleThemeToggle = () => {
-        // Toggle between dark and system themes
-        const newTheme = currentTheme === 'dark' ? 'system' : 'dark';
-        toggleTheme(newTheme);
-    };
-
     return (
         <AntdHeader className={styles.header}>
             <div className={styles.logoContainer}>
@@ -59,14 +39,6 @@ const Header = () => {
 
             <div className={styles.userInfo}>
                 <Space size="middle">
-                    <Tooltip title="Переключить тему">
-                        <Button
-                            type="text"
-                            icon={themeIcon}
-                            onClick={handleThemeToggle}
-                        />
-                    </Tooltip>
-
                     <div className={styles.navLinks}>
                         <Button type="text">
                             <Link to="/main">Главная</Link>
