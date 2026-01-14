@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AutoComplete, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import useProjects from '../../hooks/useProjects';
+import sidebarStyles from '../layout/Sidebar.module.css';
 
 const Selector = ({ onProjectSelect, selectedProject }) => {
     const [inputValue, setInputValue] = useState('');
@@ -49,6 +50,7 @@ const Selector = ({ onProjectSelect, selectedProject }) => {
             notFoundContent={loading ? <Spin size="small" /> : 'Не найдено'}
             prefix={<SearchOutlined />}
             suffix={loading ? <Spin size="small" /> : null}
+            className={sidebarStyles.versionSelector}
         />
     );
 };
