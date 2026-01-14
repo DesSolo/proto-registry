@@ -2,8 +2,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
 import MainPage from '../pages/MainPage';
-import SettingsPage from '../pages/SettingsPage';
-import HelpPage from '../pages/HelpPage';
 
 const router = createBrowserRouter([
   {
@@ -29,14 +27,6 @@ const router = createBrowserRouter([
       {
         path: 'project/:projectId/version/:versionId/file/*',
         element: <MainPage />,
-      },
-      {
-        path: 'settings',
-        element: <SettingsPage />
-      },
-      {
-        path: 'help',
-        element: <HelpPage />
       }
     ]
   }
