@@ -1,7 +1,7 @@
 // src/components/layout/Content.jsx
 import React from 'react';
-import { Spin, Card } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
+import { Spin, Card, Tooltip, message } from 'antd';
+import { SyncOutlined, CopyOutlined } from '@ant-design/icons';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
@@ -86,14 +86,33 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
         );
     });
 
-    // Формируем заголовок с иконкой обновления
+    // Функция для копирования содержимого в буфер обмена
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(content);
+            message.success('Содержимое скопировано в буфер обмена');
+        } catch (err) {
+            console.error('Ошибка при копировании в буфер обмена:', err);
+            message.error('Не удалось скопировать содержимое');
+        }
+    };
+
+    // Формируем заголовок с иконками обновления и копирования
     const cardTitle = (
         <div className={styles.cardTitle}>
             <span className={styles.filePath}>{filePath}</span>
-            <SyncOutlined
-                onClick={onRefresh}
-                title="Обновить"
-            />
+            <Tooltip title="Копировать в буфер">
+                <CopyOutlined
+                    onClick={copyToClipboard}
+                    style={{ marginLeft: '12px' }}
+                />
+            </Tooltip>
+            <Tooltip title="Обновить">
+                <SyncOutlined
+                    onClick={onRefresh}
+                    style={{ marginLeft: '12px' }}
+                />
+            </Tooltip>
         </div>
     );
 
