@@ -112,18 +112,11 @@ Proto Registry provides both REST and gRPC API for working with contracts:
 
 ### REST API
 
-- `GET /v1/projects` — Get list of projects
-- `GET /v1/projects/{id}` — Get project information
-- `POST /v1/projects` — Register project
-- `GET /v1/versions` — Get list of versions
-- `GET /v1/versions/{id}` — Get version information
-- `GET /v1/files` — Get list of files
-- `GET /v1/files:content` — Get file content
-- `POST /v1/files` — Register files
+`docs/apidocs.swagger.json`
 
 ### gRPC API
 
-See the service definition in `api/registry/service_v1.proto`.
+`api/registry/service_v1.proto`
 
 ## License
 
