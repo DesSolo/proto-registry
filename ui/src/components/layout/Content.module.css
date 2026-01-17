@@ -73,3 +73,7 @@
   height: 100%;
   min-height: 400px;
 }
+
+.swaggerUI {
+  filter: invert(88%) hue-rotate(180deg);
+}

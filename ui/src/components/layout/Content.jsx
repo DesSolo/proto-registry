@@ -142,7 +142,7 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
                 className={styles.contractCard}
                 styles={{ body: { padding: 0, height: '100%' } }}
             >
-                <div style={{ height: 'calc(100vh - 200px)', overflow: 'auto' }}>
+                <div className={styles.swaggerUI}>
                     <SwaggerUI spec={specContent} />
                 </div>
             </Card>
