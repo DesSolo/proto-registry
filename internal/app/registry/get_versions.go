@@ -11,7 +11,7 @@ import (
 	desc "proto-registry/pkg/api/registry"
 )
 
-// GetVersions ...
+// GetVersions Возвращает детальное представление версии
 func (i *Implementation) GetVersions(ctx context.Context, req *desc.GetVersionsRequest) (*desc.GetVersionsResponse, error) {
 	versions, err := i.service.GetVersions(ctx, convertGetVersionsFilterToModel(req))
 	if err != nil {

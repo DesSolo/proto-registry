@@ -19,7 +19,7 @@ func Execute() {
 func newRootCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proto-registry",
-		Short: "proto-registry",
+		Short: "Manage contract registry",
 	}
 
 	cmd.AddCommand(

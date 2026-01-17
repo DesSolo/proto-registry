@@ -3,7 +3,7 @@ stages:
 
 variables:
   REGISTRY_ADDR: "127.0.0.1:50051"
-  REGISTRY_CONTRACTS_PATH: "api"
+  REGISTRY_CONTRACTS_ROOTS: "api,docs"
 
 register-contracts:
   stage: register-contracts
@@ -20,9 +20,16 @@ register-contracts:
         echo "Unsupported ref type" >&2
         exit 1
       fi
-    - registry-cli contracts register \
+
+      IFS=',' read -ra ROOTS <<< "$REGISTRY_CONTRACTS_ROOTS"
+      declare -a ROOT_FLAGS=()
+      for root in "${ROOTS[@]}"; do
+        ROOT_FLAGS+=(--root "$root")
+      done
+
+      registry-cli contracts register \
         --registry-addr "$REGISTRY_ADDR" \
-        --root docs \
+        "${ROOT_FLAGS[@]}" \
         --project-id "$CI_PROJECT_ID" \
         --project-name "$CI_PROJECT_NAME" \
         --ref "$REF" \

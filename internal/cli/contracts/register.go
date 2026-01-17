@@ -1,7 +1,7 @@
 package contracts
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"os"
@@ -153,16 +153,18 @@ func isOpenAPIFile(path string) bool {
 		return false
 	}
 
-	f, err := os.Open(path) // nolint:gosec
+	data, err := os.ReadFile(path) // nolint:gosec
 	if err != nil {
 		return false
 	}
-	defer f.Close()
 
-	buf := make([]byte, 64)
-	if _, err := f.Read(buf); err != nil {
+	var spec struct {
+		Swagger string `json:"swagger"`
+		OpenAPI string `json:"openapi"`
+	}
+	if err := json.Unmarshal(data, &spec); err != nil {
 		return false
 	}
 
-	return bytes.Contains(buf, []byte(`"swagger"`))
+	return spec.Swagger != "" || spec.OpenAPI != ""
 }
