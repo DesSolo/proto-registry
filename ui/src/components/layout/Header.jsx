@@ -24,8 +24,8 @@ const Header = () => {
     return (
         <AntdHeader className={styles.header}>
             <div className={styles.logoContainer}>
-                <Link to="/main" className={styles.logoLink}>
-                    <img src="/logo.svg" alt="Logo" className={styles.logoImage} />
+                <Link to="/" className={styles.logoLink}>
+                    <img src="/ui/logo.svg" alt="Logo" className={styles.logoImage} />
                     <span className={styles.logoText}>{appConfig.appName}</span>
                 </Link>
             </div>

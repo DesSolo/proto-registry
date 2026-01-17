@@ -235,7 +235,7 @@ const Sidebar = ({ onFileSelect }) => {
                         value={selectedVersion?.id}
                         onChange={handleVersionChange}
                         className={styles.versionSelector}
-                        size="large"
+                        size="medium"
                         placeholder="Выберите версию"
                         popupMatchSelectWidth={false}
                         optionLabelProp="label"

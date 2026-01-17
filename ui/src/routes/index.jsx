@@ -30,6 +30,8 @@ const router = createBrowserRouter([
       }
     ]
   }
-]);
+], {
+  basename: "/ui"
+});
 
 export default router;

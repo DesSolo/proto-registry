@@ -43,7 +43,7 @@ const Selector = ({ onProjectSelect, selectedProject }) => {
             onSelect={handleSelect}
             onSearch={handleSearch}
             placeholder="Поиск по проектам..."
-            size="large"
+            size="medium"
             style={{ width: '100%', marginBottom: '16px', fontFamily: 'inherit' }}
             value={inputValue}
             allowClear
