@@ -1,7 +1,7 @@
 // src/components/layout/Content.jsx
 import React from 'react';
 import { Spin, Card, Tooltip, message } from 'antd';
-import { SyncOutlined, CopyOutlined } from '@ant-design/icons';
+import { SyncOutlined, CopyOutlined, DownloadOutlined } from '@ant-design/icons';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
@@ -57,6 +57,61 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
             </Card>
         );
     }
+
+    // Определение MIME-типа по расширению файла
+    const getMimeType = (fileName) => {
+        const extension = fileName.toLowerCase().split('.').pop();
+        const mimeTypes = {
+            'json': 'application/json',
+            'proto': 'text/plain',
+        };
+
+        return mimeTypes[extension] || 'text/plain';
+    };
+
+    // Функция для скачивания файла
+    const downloadFile = () => {
+        try {
+            // Определяем MIME-тип файла
+            const mimeType = getMimeType(filePath);
+
+            // Создаем Blob с содержимым файла
+            const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+
+            // Получаем имя файла из пути
+            const fileName = filePath.split('/').pop() || 'file.txt';
+
+            // Создаем ссылку для скачивания
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+
+            // Добавляем ссылку ко временно, кликаем и удаляем
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Освобождаем ресурсы
+            URL.revokeObjectURL(url);
+
+            message.success(`Файл ${fileName} успешно скачан`);
+        } catch (err) {
+            console.error('Ошибка при скачивании файла:', err);
+            message.error('Не удалось скачать файл');
+        }
+    };
+
+    // Функция для копирования содержимого в буфер обмена
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(content);
+            message.success('Содержимое скопировано в буфер обмена');
+        } catch (err) {
+            console.error('Ошибка при копировании в буфер обмена:', err);
+            message.error('Не удалось скопировать содержимое');
+        }
+    };
 
     // Проверяем, является ли содержимое OpenAPI/Swagger спецификацией
     const isOpenApiSpec = () => {
@@ -117,13 +172,19 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
             }
         }
 
-        // Формируем заголовок с иконками обновления и копирования
+        // Формируем заголовок с иконками обновления, копирования и скачивания
         const cardTitle = (
             <div className={styles.cardTitle}>
                 <span className={styles.filePath}>{filePath}</span>
                 <Tooltip title="Копировать в буфер">
                     <CopyOutlined
-                        onClick={() => copyToClipboard()}
+                        onClick={copyToClipboard}
+                        style={{ marginLeft: '12px' }}
+                    />
+                </Tooltip>
+                <Tooltip title="Скачать файл">
+                    <DownloadOutlined
+                        onClick={downloadFile}
                         style={{ marginLeft: '12px' }}
                     />
                 </Tooltip>
@@ -164,24 +225,19 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
         );
     });
 
-    // Функция для копирования содержимого в буфер обмена
-    const copyToClipboard = async () => {
-        try {
-            await navigator.clipboard.writeText(content);
-            message.success('Содержимое скопировано в буфер обмена');
-        } catch (err) {
-            console.error('Ошибка при копировании в буфер обмена:', err);
-            message.error('Не удалось скопировать содержимое');
-        }
-    };
-
-    // Формируем заголовок с иконками обновления и копирования
+    // Формируем заголовок с иконками обновления, копирования и скачивания
     const cardTitle = (
         <div className={styles.cardTitle}>
             <span className={styles.filePath}>{filePath}</span>
             <Tooltip title="Копировать в буфер">
                 <CopyOutlined
                     onClick={copyToClipboard}
+                    style={{ marginLeft: '12px' }}
+                />
+            </Tooltip>
+            <Tooltip title="Скачать файл">
+                <DownloadOutlined
+                    onClick={downloadFile}
                     style={{ marginLeft: '12px' }}
                 />
             </Tooltip>
