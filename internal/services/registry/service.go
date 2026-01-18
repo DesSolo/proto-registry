@@ -3,49 +3,40 @@ package registry
 import (
 	"context"
 
-	"proto-registry/internal/models"
+	"proto-registry/internal/repositories"
+	"proto-registry/internal/uow"
 )
 
 type GitlabClient interface {
 	GetRepositoryFile(ctx context.Context, project, filePath, ref string) ([]byte, error)
 }
 
-type ProjectsRepository interface {
-	GetProjects(ctx context.Context, filter models.GetProjectsFilter) ([]*models.Project, error)
-	GetProject(ctx context.Context, id int64) (*models.Project, error)
-	UpsertProject(ctx context.Context, project *models.Project) error
-}
-
-type VersionsRepository interface {
-	GetVersions(ctx context.Context, filter models.GetVersionsFilter) ([]*models.Version, error)
-	GetVersion(ctx context.Context, id int64) (*models.Version, error)
-	UpsertVersion(ctx context.Context, version *models.Version) error
-}
-
-type FilesRepository interface {
-	GetFiles(ctx context.Context, filter models.GetFilesFilter) ([]*models.File, error)
-	DeleteFilesForVersion(ctx context.Context, versionID int64) error
-	CreateFile(ctx context.Context, file *models.File) error
+type UnitOfWork interface {
+	Do(ctx context.Context, fn func(repos uow.Repositories) error) error
 }
 
 type Service struct {
 	gitlabClient GitlabClient
 
-	projectsRepo ProjectsRepository
-	versionsRepo VersionsRepository
-	filesRepo    FilesRepository
+	projectsRepo repositories.ProjectsRepository
+	versionsRepo repositories.VersionsRepository
+	filesRepo    repositories.FilesRepository
+
+	uow UnitOfWork
 }
 
 func NewService(
 	gitlabClient GitlabClient,
-	projectsRepo ProjectsRepository,
-	versionsRepo VersionsRepository,
-	filesRepo FilesRepository,
+	projectsRepo repositories.ProjectsRepository,
+	versionsRepo repositories.VersionsRepository,
+	filesRepo repositories.FilesRepository,
+	uow UnitOfWork,
 ) *Service {
 	return &Service{
 		gitlabClient: gitlabClient,
 		projectsRepo: projectsRepo,
 		versionsRepo: versionsRepo,
 		filesRepo:    filesRepo,
+		uow:          uow,
 	}
 }

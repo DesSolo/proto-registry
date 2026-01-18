@@ -16,6 +16,7 @@ import (
 	"proto-registry/internal/repositories/projects"
 	"proto-registry/internal/repositories/versions"
 	registry_service "proto-registry/internal/services/registry"
+	"proto-registry/internal/uow"
 	"proto-registry/pkg/interceptor"
 	"proto-registry/pkg/server"
 )
@@ -106,6 +107,7 @@ func (c *container) Service() registry.Service {
 			projects.NewRepository(c.Pool()),
 			versions.NewRepository(c.Pool()),
 			files.NewRepository(c.Pool()),
+			uow.NewUnitOfWork(c.Pool()),
 		)
 	}
 
