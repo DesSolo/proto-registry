@@ -7,28 +7,9 @@
   box-shadow: inset -1px 0 4px rgba(0, 0, 0, 0.1);
 }
 
-.treeContainer {
+.treeContainerWithoutScroll {
   margin-top: 24px;
   background: transparent;
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
-}
-
-.treeContainer::-webkit-scrollbar {
-  width: 6px;
-}
-
-.treeContainer::-webkit-scrollbar-track {
-  background: rgba(20, 20, 30, 0.3);
-}
-
-.treeContainer::-webkit-scrollbar-thumb {
-  background: rgba(80, 80, 100, 0.5);
-  border-radius: 3px;
-}
-
-.treeContainer::-webkit-scrollbar-thumb:hover {
-  background: #1e90ff;
 }
 
 .treeNode {
@@ -50,6 +31,12 @@
   border-left: 3px solid #1e90ff;
   color: #ffffff;
   font-weight: 500;
+}
+
+.mainDirectory {
+  background: rgba(106, 90, 205, 0.2) !important;
+  border-left: 3px solid #6a5acd !important;
+  font-weight: bold;
 }
 
 .versionSelector {
@@ -106,4 +93,13 @@
 .searchInput:hover, .searchInput:focus {
   border-color: #1e90ff !important;
   box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2) !important;
+}
+
+/* Стили для узлов дерева */
+:global(.ant-tree-switcher) {
+  margin-right: -5px !important;
+}
+
+:global(.ant-tree-node-content-wrapper) {
+  padding: 0 4px !important;
 }

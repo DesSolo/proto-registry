@@ -182,41 +182,112 @@ const Sidebar = ({ onFileSelect }) => {
         return `${time} ${date}`;
     };
 
-    // Преобразуем flat список файлов в tree structure
+    // Определяем общий префикс для группировки файлов
+    const getGroupPrefix = (dirParts) => {
+        if (dirParts.length >= 3) {
+            // Если у нас есть 3 или более компонентов, используем первые n-1 как префикс
+            // Например, для api/grpc/service/v1/file.proto -> api/grpc/service
+            return dirParts.slice(0, -1).join('/');
+        } else {
+            // Если меньше 3 компонентов, используем всю директорию как префикс
+            return dirParts.join('/');
+        }
+    };
+
+    // Определяем поддиректорию внутри префикса
+    const getSubDir = (dirParts) => {
+        if (dirParts.length >= 3) {
+            // Для api/grpc/service/v1/file.proto -> поддиректория v1
+            return dirParts[dirParts.length - 1];
+        } else {
+            // Если меньше 3 компонентов, нет поддиректории
+            return null;
+        }
+    };
+
+    // Преобразуем flat список файлов в структуру с группировкой по общему префиксу
     const buildTreeData = React.useMemo(() => {
-        const root = { key: 'root', title: 'Корень', children: [] };
+        // Группируем файлы по общему префиксу
+        const groupedFiles = new Map();
 
         files.forEach(file => {
             const parts = file.path.split('/');
-            let current = root;
+            const fileName = parts[parts.length - 1]; // имя файла
+            const dirParts = parts.slice(0, -1); // директории
 
-            for (let i = 0; i < parts.length; i++) {
-                const part = parts[i];
-                const isFile = i === parts.length - 1;
+            // Определяем общий префикс для группировки
+            const prefix = getGroupPrefix(dirParts);
 
-                // Создаем уникальный ключ для каждого узла
-                const nodeKey = parts.slice(0, i + 1).join('/');
+            // Инициализируем группу, если она не существует
+            if (!groupedFiles.has(prefix)) {
+                groupedFiles.set(prefix, new Map());
+            }
 
-                // Ищем существующий узел с таким же ключом
-                let existingNode = current.children.find(child => child.key === nodeKey);
+            // Определяем поддиректорию внутри префикса
+            const subDir = getSubDir(dirParts);
 
-                if (!existingNode) {
-                    existingNode = {
-                        key: nodeKey,
-                        title: part,
-                        isLeaf: isFile,
-                        file: isFile ? file : null,
-                        children: isFile ? undefined : []
-                    };
-                    current.children.push(existingNode);
+            // Добавляем файл в соответствующую поддиректорию
+            if (subDir) {
+                if (!groupedFiles.get(prefix).has(subDir)) {
+                    groupedFiles.get(prefix).set(subDir, []);
                 }
-
-                current = existingNode;
+                groupedFiles.get(prefix).get(subDir).push({ file, fileName });
+            } else {
+                if (!groupedFiles.get(prefix).has('')) {
+                    groupedFiles.get(prefix).set('', []);
+                }
+                groupedFiles.get(prefix).get('').push({ file, fileName });
             }
         });
 
-        return root.children;
+        // Создаем дерево из сгруппированных файлов
+        const result = [];
+
+        groupedFiles.forEach((subDirs, prefix) => {
+            const prefixNode = {
+                key: prefix,
+                title: prefix,
+                children: [],
+                isLeaf: false
+            };
+
+            subDirs.forEach((filesArray, subDir) => {
+                if (subDir) { // Есть поддиректория
+                    const subDirNode = {
+                        key: `${prefix}/${subDir}`,
+                        title: subDir,
+                        children: [],
+                        isLeaf: false
+                    };
+
+                    filesArray.forEach(({ file, fileName }) => {
+                        subDirNode.children.push({
+                            key: file.path,
+                            title: fileName,
+                            isLeaf: true,
+                            file: file
+                        });
+                    });
+
+                    prefixNode.children.push(subDirNode);
+                } else { // Нет поддиректории, файлы напрямую в префиксе
+                    filesArray.forEach(({ file, fileName }) => {
+                        prefixNode.children.push({
+                            key: file.path,
+                            title: fileName,
+                            isLeaf: true,
+                            file: file
+                        });
+                    });
+                }
+            });
+
+            result.push(prefixNode);
+        });
+
+        return result;
     }, [files]);
+
 
     return (
         <div className={styles.sidebarContainer}>
@@ -271,8 +342,9 @@ const Sidebar = ({ onFileSelect }) => {
                         </div>
                     ) : files.length > 0 ? (
                         <Tree
+                            showLine
                             treeData={buildTreeData}
-                            className={styles.treeContainer}
+                            className={styles.treeContainerWithoutScroll}
                             defaultExpandAll
                             switcherIcon={ <DownOutlined /> }
                             showIcon
@@ -288,6 +360,13 @@ const Sidebar = ({ onFileSelect }) => {
                                         return <span role="img" aria-label="file" style={{  fontSize: '16px' }}>📄</span>;
                                     }
                                 }
+
+                                // Проверяем, является ли директория основной директорией
+                                // Основная директория - это директория с не более чем одним слэшем в пути
+                                const isMainDir = props.key && props.key.split('/').length <= 2;
+                                if (isMainDir) {
+                                    return <FolderOutlined style={{ fontSize: '16px', color: '#6a5acd' }} />;
+                                }
                                 return <FolderOutlined style={{ fontSize: '16px' }} />;
                             }}
                             onSelect={(selectedKeys, info) => {
@@ -300,7 +379,20 @@ const Sidebar = ({ onFileSelect }) => {
                             }}
                             selectedKeys={selectedFile ? [selectedFile.path] : []}
                             classNames={{
-                                node: styles.treeNode,
+                                node: (nodeData) => {
+                                    // Проверяем, является ли узел основной директорией
+                                    // Основная директория - это узел, который не является файлом (не листом)
+                                    // и имеет не более одного слэша в пути (например, api/grpc/service)
+                                    const isMainDir = nodeData.key &&
+                                        !nodeData.isLeaf &&
+                                        nodeData.key.split('/').length <= 2;
+
+                                    // Применяем специальный класс для основных директорий
+                                    if (isMainDir) {
+                                        return `${styles.treeNode} ${styles.mainDirectory}`;
+                                    }
+                                    return styles.treeNode;
+                                },
                                 nodeSelected: styles.treeNodeSelected
                             }}
                         />
