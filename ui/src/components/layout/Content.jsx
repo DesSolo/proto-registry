@@ -201,7 +201,7 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
             <Card
                 title={cardTitle}
                 className={styles.contractCard}
-                styles={{ body: { padding: 0, height: '100%' } }}
+                styles={{ body: { padding: 0 } }}
             >
                 <div className={styles.swaggerUI}>
                     <SwaggerUI spec={specContent} />
@@ -256,11 +256,13 @@ const Content = ({ content, filePath, loading, onRefresh }) => {
             className={styles.contractCard}
             styles={{ body: { padding: 0 }}}
         >
-            <pre className={styles.container}>
-                <code className={`language-${fileType}`}>
-                    {numberedLines}
-                </code>
-            </pre>
+            <div className={styles.container}>
+                <pre className={styles.codeContainer}>
+                    <code className={`language-${fileType}`}>
+                        {numberedLines}
+                    </code>
+                </pre>
+            </div>
         </Card>
     );
 };

@@ -18,7 +18,7 @@
 }
 
 .container {
-  padding: 16px;
+  padding: 0;
   font-family: 'Fira Code', 'JetBrains Mono', monospace !important;
   line-height: 1.5;
   white-space: pre;
@@ -26,6 +26,15 @@
   overflow-y: auto; /* Добавляем вертикальную прокрутку */
   min-height: 300px;
   max-height: calc(100vh - 150px); /* Ограничиваем максимальную высоту */
+  flex: 1;
+}
+
+.codeContainer {
+  padding: 16px;
+  font-family: 'Fira Code', 'JetBrains Mono', monospace !important;
+  line-height: 1.5;
+  white-space: pre;
+  word-wrap: break-word;
   flex: 1;
 }
 
@@ -75,5 +84,8 @@
 }
 
 .swaggerUI {
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
   filter: invert(88%) hue-rotate(180deg);
+  padding: 16px;
 }
