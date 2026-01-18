@@ -122,6 +122,19 @@ const Sidebar = ({ onFileSelect }) => {
         }
     }, [selectedProject, setVersionsProject]);
 
+    // Автоматически выбираем ветку master/main после загрузки версий
+    useEffect(() => {
+        if (selectedProject && versions.length > 0 && !selectedVersion) {
+            // Сначала ищем ветку 'main', затем 'master'
+            const defaultBranch = versions.find(v => v.ref === 'main') || versions.find(v => v.ref === 'master');
+
+            if (defaultBranch) {
+                setSelectedVersion(defaultBranch);
+                setFilesVersion(defaultBranch.id);
+            }
+        }
+    }, [selectedProject, versions, selectedVersion, setFilesVersion]);
+
     // Синхронизируем версии из URL только один раз при загрузке
     useEffect(() => {
         if (versionIdFromUrl && versions.length > 0 && !selectedVersion && !urlVersionProcessed) {
