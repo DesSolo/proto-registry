@@ -230,7 +230,7 @@ const Sidebar = ({ onFileSelect }) => {
                     <Spin size="small" />
                 </div>
             ) : selectedProject && versions.length > 0 ? (
-                <div style={{ marginTop: '16px' }}>
+                <div style={{ marginTop: '10px' }}>
                     <Select
                         value={selectedVersion?.id}
                         onChange={handleVersionChange}
